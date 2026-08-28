@@ -87,51 +87,51 @@ export default function ProfileTab() {
   const dmCount = Object.keys(messages).length;
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-y-auto p-4.5 text-slate-100 bg-[#0c0822] select-none">
+    <div className="flex-1 flex flex-col h-full overflow-y-auto p-5 text-slate-200 bg-[#070518] select-none scrollbar-none">
       
       {/* 1. EDIT PROFILE SCREEN / PROFILE ACCOUNT CREATION SETUP */}
       {isEditing ? (
-        <form onSubmit={handleSave} className="space-y-4">
+        <form onSubmit={handleSave} className="space-y-5">
           <div>
             <h1 className="text-lg font-black text-white flex items-center gap-1.5">
-              👤 Setup Student Profile
+              👤 Setup Profile
             </h1>
-            <p className="text-[11px] text-[#a59ef5]">Create your campus profile to match with similar students.</p>
+            <p className="text-[10px] text-[#a59ef5] font-medium tracking-wide">Initialize your profile to match with similar students.</p>
           </div>
 
           {/* Name & Bio input */}
-          <div className="space-y-3 bg-[#17123a] p-4 rounded-2xl border border-[#2b2067] shadow-sm">
+          <div className="space-y-4 bg-[#120e2e] p-4 rounded-3xl border border-[#231b57]/20 shadow-xs">
             <div>
-              <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Full Name</label>
+              <label className="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Full Name</label>
               <input
                 type="text"
                 value={draftName}
                 onChange={e => setDraftName(e.target.value)}
                 required
-                className="w-full bg-[#0c0822] border border-[#251b5e] text-xs text-slate-100 rounded-xl px-3 py-2 focus:outline-hidden focus:ring-1 focus:ring-fuchsia-500 placeholder:text-slate-550 font-semibold"
+                className="w-full bg-[#070518] border border-[#20174c]/50 text-xs text-white rounded-xl px-3 py-2.5 focus:outline-hidden focus:ring-1 focus:ring-fuchsia-500 placeholder:text-slate-550 font-semibold"
               />
             </div>
             <div>
-              <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Short Bio</label>
+              <label className="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Short Bio</label>
               <textarea
                 value={draftBio}
                 onChange={e => setDraftBio(e.target.value)}
-                placeholder="Talk about classes, clubs or hobbies..."
-                className="w-full bg-[#0c0822] border border-[#251b5e] text-xs text-slate-100 rounded-xl px-3 py-2 h-14 resize-none focus:outline-hidden focus:ring-1 focus:ring-fuchsia-500 placeholder:text-slate-550 font-semibold"
+                placeholder="Talk about classes, projects, or goals..."
+                className="w-full bg-[#070518] border border-[#20174c]/50 text-xs text-white rounded-xl px-3 py-2.5 h-16 resize-none focus:outline-hidden focus:ring-1 focus:ring-fuchsia-500 placeholder:text-slate-550 font-semibold"
               />
             </div>
           </div>
 
           {/* Avatar Selector Grid */}
           <div>
-            <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Choose Avatar</label>
-            <div className="flex gap-2.5 justify-center bg-[#17123a] p-4 rounded-2xl border border-[#2b2067] shadow-sm">
+            <label className="text-[9px] font-bold text-slate-550 uppercase tracking-widest block mb-2">Avatar Options</label>
+            <div className="flex gap-2.5 justify-center bg-[#120e2e] p-4.5 rounded-3xl border border-[#231b57]/20 shadow-xs">
               {AVATAR_OPTIONS.map((av, idx) => (
                 <div
                   key={idx}
                   onClick={() => setDraftAvatar(av)}
                   className={`relative cursor-pointer rounded-2xl overflow-hidden border-2 transition ${
-                    draftAvatar === av ? "border-fuchsia-500 scale-105" : "border-[#251e5c] opacity-60 hover:opacity-100"
+                    draftAvatar === av ? "border-fuchsia-500 scale-105" : "border-transparent opacity-60 hover:opacity-100"
                   }`}
                 >
                   <img src={av} alt="Avatar option" className="w-10 h-10 object-cover" />
@@ -147,8 +147,8 @@ export default function ProfileTab() {
 
           {/* Interests Tag Selector */}
           <div>
-            <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Interests</label>
-            <div className="flex flex-wrap gap-1.5 bg-[#17123a] p-4 rounded-2xl border border-[#2b2067] shadow-sm">
+            <label className="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mb-2">Interests</label>
+            <div className="flex flex-wrap gap-1.5 bg-[#120e2e] p-4 rounded-3xl border border-[#231b57]/20 shadow-xs">
               {INTERESTS_PRESETS.map((item, idx) => {
                 const selected = draftInterests.includes(item);
                 return (
@@ -156,10 +156,10 @@ export default function ProfileTab() {
                     type="button"
                     key={idx}
                     onClick={() => handleToggleInterest(item)}
-                    className={`text-[10px] px-3 py-1.5 rounded-lg border font-bold transition ${
+                    className={`text-[10px] px-3.5 py-1.5 rounded-xl border font-bold transition ${
                       selected
-                        ? "bg-[#8b5cf6] border-[#9b6cff] text-white shadow-xs"
-                        : "bg-[#0c0822] border-[#251b5e] text-slate-400 hover:text-slate-200"
+                        ? "bg-[#8b5cf6] border-[#9b6cff]/20 text-white shadow-xs"
+                        : "bg-[#070518] border-[#20174c]/50 text-slate-400 hover:text-white"
                     }`}
                   >
                     {item}
@@ -171,8 +171,8 @@ export default function ProfileTab() {
 
           {/* Skills Tag Selector */}
           <div>
-            <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Skills</label>
-            <div className="flex flex-wrap gap-1.5 bg-[#17123a] p-4 rounded-2xl border border-[#2b2067] shadow-sm">
+            <label className="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mb-2">Skills</label>
+            <div className="flex flex-wrap gap-1.5 bg-[#120e2e] p-4 rounded-3xl border border-[#231b57]/20 shadow-xs">
               {SKILLS_PRESETS.map((item, idx) => {
                 const selected = draftSkills.includes(item);
                 return (
@@ -180,10 +180,10 @@ export default function ProfileTab() {
                     type="button"
                     key={idx}
                     onClick={() => handleToggleSkill(item)}
-                    className={`text-[10px] px-3 py-1.5 rounded-lg border font-bold transition ${
+                    className={`text-[10px] px-3.5 py-1.5 rounded-xl border font-bold transition ${
                       selected
-                        ? "bg-[#8b5cf6] border-[#9b6cff] text-white shadow-xs"
-                        : "bg-[#0c0822] border-[#251b5e] text-slate-400 hover:text-slate-200"
+                        ? "bg-[#8b5cf6] border-[#9b6cff]/20 text-white shadow-xs"
+                        : "bg-[#070518] border-[#20174c]/50 text-slate-400 hover:text-white"
                     }`}
                   >
                     {item}
@@ -195,8 +195,8 @@ export default function ProfileTab() {
 
           {/* Hobbies Tag Selector */}
           <div>
-            <label className="text-[9px] font-bold text-slate-550 uppercase tracking-wider block mb-1">Hobbies</label>
-            <div className="flex flex-wrap gap-1.5 bg-[#17123a] p-4 rounded-2xl border border-[#2b2067] shadow-sm">
+            <label className="text-[9px] font-bold text-slate-550 uppercase tracking-widest block mb-2">Hobbies</label>
+            <div className="flex flex-wrap gap-1.5 bg-[#120e2e] p-4 rounded-3xl border border-[#231b57]/20 shadow-xs">
               {HOBBIES_PRESETS.map((item, idx) => {
                 const selected = draftHobbies.includes(item);
                 return (
@@ -204,10 +204,10 @@ export default function ProfileTab() {
                     type="button"
                     key={idx}
                     onClick={() => handleToggleHobby(item)}
-                    className={`text-[10px] px-3 py-1.5 rounded-lg border font-bold transition ${
+                    className={`text-[10px] px-3.5 py-1.5 rounded-xl border font-bold transition ${
                       selected
-                        ? "bg-[#8b5cf6] border-[#9b6cff] text-white shadow-xs"
-                        : "bg-[#0c0822] border-[#251b5e] text-slate-400 hover:text-slate-200"
+                        ? "bg-[#8b5cf6] border-[#9b6cff]/20 text-white shadow-xs"
+                        : "bg-[#070518] border-[#20174c]/50 text-slate-400 hover:text-white"
                     }`}
                   >
                     {item}
@@ -220,10 +220,10 @@ export default function ProfileTab() {
           {/* Submit Save */}
           <button
             type="submit"
-            className="w-full py-3 bg-[#8b5cf6] hover:bg-[#7c3aed] text-white font-bold rounded-xl text-xs transition shadow-md active:scale-95 flex items-center justify-center gap-1"
+            className="w-full py-3 bg-gradient-to-r from-indigo-650 to-indigo-750 text-white font-black rounded-xl text-xs uppercase tracking-wider transition shadow-md active:scale-95 flex items-center justify-center gap-1.5"
           >
-            Save Profile & Explore Campus
-            <ArrowRight className="w-3.5 h-3.5" />
+            Save Profile & Explore
+            <ArrowRight className="w-4 h-4" />
           </button>
         </form>
       ) : (
@@ -232,46 +232,46 @@ export default function ProfileTab() {
         <div className="space-y-5">
           
           {/* Profile Card Summary */}
-          <div className="relative bg-[#17123a] border border-[#2b2067] rounded-3xl p-5 shadow-sm overflow-hidden">
+          <div className="relative bg-[#120e2e] border border-[#231b57]/20 rounded-3xl p-5 shadow-sm overflow-hidden">
             <div className="absolute top-0 right-0 w-28 h-28 bg-[#ec4899]/5 rounded-full blur-2xl"></div>
             
             <div className="flex items-start gap-4">
               <img
                 src={currentUser.avatar}
                 alt={currentUser.name}
-                className="w-14 h-14 rounded-2xl object-cover border border-[#2b2067] shrink-0 shadow-sm"
+                className="w-12 h-12 rounded-2xl object-cover border border-[#2b2067]/40 shrink-0 shadow-sm"
               />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <h2 className="text-base font-black text-white truncate leading-snug">{currentUser.name}</h2>
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="text-[#a59ef5] hover:text-white p-1 hover:bg-[#251e5c] rounded-lg transition"
+                    className="text-[#a59ef5] hover:text-white p-1 hover:bg-[#1c1647] rounded-lg transition"
                   >
                     <Edit2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
                 <p className="text-[10px] text-slate-500">@{currentUser.username}</p>
                 
-                <div className="flex items-center gap-1 mt-1.5 bg-[#ec4899]/10 border border-[#ec4899]/20 px-2 py-0.5 rounded-full w-fit">
+                <div className="flex items-center gap-1 mt-1.5 bg-[#ec4899]/10 border border-[#ec4899]/20 px-2.5 py-0.5 rounded-full w-fit">
                   <span className="text-[9px] text-[#f472b6] font-extrabold uppercase">{getLevelName(currentUser.level)}</span>
                 </div>
               </div>
             </div>
 
             {/* Level & XP Gauge */}
-            <div className="mt-4.5 border-t border-[#2b2067] pt-3.5">
+            <div className="mt-4.5 border-t border-[#1d1746] pt-3.5">
               <div className="flex justify-between items-center text-[10px] font-bold text-slate-400 mb-1">
                 <span>XP Level {currentUser.level}</span>
                 <span>{currentUser.xp} / {xpMax} XP</span>
               </div>
-              <div className="w-full h-2 bg-[#0c0822] border border-[#251b5e]/50 rounded-full overflow-hidden">
+              <div className="w-full h-1.5 bg-[#070518] rounded-full overflow-hidden">
                 <div
                   className="h-full bg-gradient-to-r from-[#ec4899] to-[#8b5cf6] rounded-full transition-all duration-500"
                   style={{ width: `${xpPercent}%` }}
                 ></div>
               </div>
-              <p className="text-[9px] text-slate-550 mt-1.5 italic font-semibold">
+              <p className="text-[9px] text-[#a59ef5] mt-1.5 italic font-semibold">
                 Earn XP by sharing experiences or scanning spots.
               </p>
             </div>
@@ -279,17 +279,17 @@ export default function ProfileTab() {
 
           {/* Quick Statistics Stats Grid */}
           <div>
-            <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Campus Statistics</h3>
+            <h3 className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-2">Statistics</h3>
             <div className="grid grid-cols-3 gap-2.5">
-              <div className="bg-[#17123a] border border-[#2b2067] rounded-xl p-2.5 text-center shadow-xs">
+              <div className="bg-[#120e2e] border border-[#231b57]/10 rounded-2xl p-3 text-center shadow-xs">
                 <span className="text-base font-black text-fuchsia-400 block">{scannedCount}</span>
                 <span className="text-[8px] font-bold text-slate-500 uppercase tracking-wide">Spots Scanned</span>
               </div>
-              <div className="bg-[#17123a] border border-[#2b2067] rounded-xl p-2.5 text-center shadow-xs">
+              <div className="bg-[#120e2e] border border-[#231b57]/10 rounded-2xl p-3 text-center shadow-xs">
                 <span className="text-base font-black text-purple-400 block">{badgeCount}</span>
                 <span className="text-[8px] font-bold text-slate-500 uppercase tracking-wide">Badges Won</span>
               </div>
-              <div className="bg-[#17123a] border border-[#2b2067] rounded-xl p-2.5 text-center shadow-xs">
+              <div className="bg-[#120e2e] border border-[#231b57]/10 rounded-2xl p-3 text-center shadow-xs">
                 <span className="text-base font-black text-emerald-400 block">{dmCount}</span>
                 <span className="text-[8px] font-bold text-slate-500 uppercase tracking-wide">Chats Open</span>
               </div>
@@ -298,42 +298,42 @@ export default function ProfileTab() {
 
           {/* Interests profile */}
           <div>
-            <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Interests</h3>
+            <h3 className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-2">Interests</h3>
             <div className="flex flex-wrap gap-1">
               {currentUser.interests.map((item, idx) => (
                 <span
                   key={idx}
-                  className="bg-indigo-950/70 text-indigo-300 border border-[#3d2f9b] text-[10px] px-2.5 py-1 rounded-lg font-bold shadow-xs"
+                  className="bg-indigo-950/70 text-indigo-300 text-[10px] px-2.5 py-1 rounded-lg font-bold shadow-xs"
                 >
                   {item}
                 </span>
               ))}
               {currentUser.interests.length === 0 && (
-                <span className="text-slate-500 text-xs italic">Setup profile to select interests!</span>
+                <span className="text-slate-500 text-xs italic font-semibold">Setup profile to select interests!</span>
               )}
             </div>
           </div>
 
           {/* Badges Achievements */}
           <div>
-            <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Badges</h3>
+            <h3 className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-2">Badges</h3>
             <div className="grid grid-cols-1 gap-2">
               {badges.map((badge: Badge) => {
                 const unlocked = !!badge.unlockedAt;
                 return (
                   <div
                     key={badge.id}
-                    className={`border rounded-xl p-2.5 flex items-center justify-between transition ${
+                    className={`border rounded-2xl p-3 flex items-center justify-between transition ${
                       unlocked
-                        ? "bg-[#17123a] border-amber-500/20 shadow-xs"
-                        : "bg-[#0e0a29]/50 border-[#221852]/50 opacity-70"
+                        ? "bg-[#120e2e] border-amber-500/20 shadow-xs"
+                        : "bg-[#0b0822]/50 border-[#1b1548]/30 opacity-70"
                     }`}
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className={`p-2 rounded-lg shrink-0 border ${
+                      <div className={`p-2 rounded-xl shrink-0 border ${
                         unlocked
                           ? "bg-amber-500/10 border-amber-500/30 text-amber-400"
-                          : "bg-[#0c0822] border-[#251b5e] text-slate-500"
+                          : "bg-[#070518] border-[#20174c]/50 text-slate-500"
                       }`}>
                         <Award className="w-4 h-4" />
                       </div>
@@ -350,7 +350,7 @@ export default function ProfileTab() {
                         {badge.unlockedAt}
                       </span>
                     ) : (
-                      <Lock className="w-3 h-3 text-slate-600 shrink-0 mr-1" />
+                      <Lock className="w-3.5 h-3.5 text-slate-600 shrink-0 mr-1" />
                     )}
                   </div>
                 );
