@@ -10,7 +10,7 @@ import InboxTab from "../components/InboxTab";
 import ProfileTab from "../components/ProfileTab";
 import ProfileModal from "../components/ProfileModal";
 import LevelUpOverlay from "../components/LevelUpOverlay";
-import { Compass, Users, Bot, MessageSquare, User, Sparkles } from "lucide-react";
+import { Compass, Users, MessageSquare, Sparkles } from "lucide-react";
 
 function CampusAppContent() {
   const {
@@ -48,13 +48,13 @@ function CampusAppContent() {
   });
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden bg-slate-50 relative">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#0c0822] relative">
       
-      {/* Toast Notification Container (Bound to phone screen coordinates, bright style) */}
+      {/* Toast Notification Container (Bound to phone screen coordinates, gamified neon style) */}
       {toastNotification && (
         <div className="absolute top-4 left-4 right-4 z-50 animate-[slideDown_0.3s_ease-out]">
-          <div className="bg-white border border-indigo-100 text-slate-800 px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-xl backdrop-blur-md">
-            <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-ping"></div>
+          <div className="bg-[#1b1548]/95 border border-[#ec4899]/30 text-white px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-[0_0_20px_rgba(236,72,153,0.15)] backdrop-blur-md">
+            <div className="w-2.5 h-2.5 rounded-full bg-fuchsia-400 animate-ping"></div>
             <p className="text-xs font-bold leading-normal">{toastNotification}</p>
           </div>
         </div>
@@ -65,73 +65,73 @@ function CampusAppContent() {
         {renderTabContent()}
       </div>
 
-      {/* BOTTOM TAB NAVIGATION BAR (Bright style) */}
-      <div className="h-16 bg-white/95 backdrop-blur-md border-t border-slate-100 flex items-center justify-around shrink-0 px-2 select-none z-10">
+      {/* BOTTOM TAB NAVIGATION BAR (Gamified dark purple with hot pink/magenta active state) */}
+      <div className="h-16 bg-[#070417]/95 backdrop-blur-md border-t border-[#20184c]/60 flex items-center justify-around shrink-0 px-2 select-none z-10">
         
         {/* TAB 1: EXPLORER */}
         <button
           onClick={() => setActiveTab("explorer")}
           className={`flex flex-col items-center justify-center flex-1 py-1 transition-all ${
-            activeTab === "explorer" ? "text-indigo-650 scale-105 font-bold" : "text-slate-400 hover:text-slate-500"
+            activeTab === "explorer" ? "text-fuchsia-450 scale-105 font-bold" : "text-slate-500 hover:text-slate-400"
           }`}
         >
           <Compass className="w-5 h-5 mb-0.5" />
-          <span className="text-[9px]">Explorer</span>
+          <span className="text-[9px] font-bold">Explorer</span>
         </button>
 
         {/* TAB 2: COMMUNITY */}
         <button
           onClick={() => setActiveTab("social")}
           className={`flex flex-col items-center justify-center flex-1 py-1 transition-all ${
-            activeTab === "social" ? "text-indigo-650 scale-105 font-bold" : "text-slate-400 hover:text-slate-500"
+            activeTab === "social" ? "text-fuchsia-450 scale-105 font-bold" : "text-slate-500 hover:text-slate-400"
           }`}
         >
           <Users className="w-5 h-5 mb-0.5" />
-          <span className="text-[9px]">Campus</span>
+          <span className="text-[9px] font-bold">Campus</span>
         </button>
 
         {/* TAB 3: GENIE CHATBOT */}
         <button
           onClick={() => setActiveTab("genie")}
           className={`flex flex-col items-center justify-center flex-1 py-1 transition-all relative ${
-            activeTab === "genie" ? "text-indigo-650 scale-105 font-bold" : "text-slate-400 hover:text-slate-500"
+            activeTab === "genie" ? "text-fuchsia-450 scale-105 font-bold" : "text-slate-500 hover:text-slate-400"
           }`}
         >
-          <div className="absolute -top-3 p-2 bg-gradient-to-r from-indigo-600 to-indigo-700 border border-indigo-500/20 rounded-full shadow-lg">
+          <div className="absolute -top-3 p-2 bg-gradient-to-r from-fuchsia-500 to-pink-500 border border-fuchsia-400/30 rounded-full shadow-lg shadow-fuchsia-500/20">
             <Sparkles className="w-4.5 h-4.5 text-white" />
           </div>
-          <span className="text-[9px] mt-5">Genie</span>
+          <span className="text-[9px] font-bold mt-5">Genie</span>
         </button>
 
         {/* TAB 4: INBOX */}
         <button
           onClick={() => setActiveTab("inbox")}
           className={`flex flex-col items-center justify-center flex-1 py-1 transition-all relative ${
-            activeTab === "inbox" ? "text-indigo-650 scale-105 font-bold" : "text-slate-400 hover:text-slate-500"
+            activeTab === "inbox" ? "text-fuchsia-450 scale-105 font-bold" : "text-slate-500 hover:text-slate-400"
           }`}
         >
           <MessageSquare className="w-5 h-5 mb-0.5" />
           {hasUnreadMessages && (
-            <span className="absolute top-1 right-5 w-2 h-2 rounded-full bg-indigo-500 border border-white animate-pulse"></span>
+            <span className="absolute top-1 right-5 w-2 h-2 rounded-full bg-fuchsia-500 border border-[#0c0822] animate-pulse"></span>
           )}
-          <span className="text-[9px]">Inbox</span>
+          <span className="text-[9px] font-bold">Inbox</span>
         </button>
 
         {/* TAB 5: PROFILE */}
         <button
           onClick={() => setActiveTab("profile")}
           className={`flex flex-col items-center justify-center flex-1 py-1 transition-all ${
-            activeTab === "profile" ? "text-indigo-650 scale-105 font-bold" : "text-slate-400 hover:text-slate-500"
+            activeTab === "profile" ? "text-fuchsia-450 scale-105 font-bold" : "text-slate-500 hover:text-slate-400"
           }`}
         >
           <img
             src={currentUser.avatar}
             alt="My Avatar"
             className={`w-5.5 h-5.5 rounded-full object-cover mb-0.5 border ${
-              activeTab === "profile" ? "border-indigo-500" : "border-slate-200"
+              activeTab === "profile" ? "border-fuchsia-500" : "border-[#20184c]"
             }`}
           />
-          <span className="text-[9px]">Profile</span>
+          <span className="text-[9px] font-bold">Profile</span>
         </button>
 
       </div>

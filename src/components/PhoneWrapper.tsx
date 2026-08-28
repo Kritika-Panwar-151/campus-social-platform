@@ -4,12 +4,12 @@ import React from "react";
 
 export default function PhoneWrapper({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen w-full bg-slate-100 flex items-center justify-center p-0 md:p-6 bg-gradient-to-tr from-indigo-100 via-sky-50 to-violet-100 overflow-y-auto">
-      {/* Mobile Frame Container (Desktop mockup, responsive on phone) */}
-      <div className="w-full h-[100dvh] md:h-[800px] md:max-w-[390px] md:rounded-[40px] md:border-[10px] md:border-slate-800 bg-white shadow-2xl relative overflow-hidden flex flex-col md:ring-1 md:ring-slate-700/10 transition-all duration-300">
+    <div className="min-h-screen w-full bg-[#130e33] flex items-center justify-center p-0 md:p-6 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1d164d] via-[#0b0822] to-black overflow-y-auto">
+      {/* Mobile Frame Container (Desktop mockup, responsive on phone, with premium purple border) */}
+      <div className="w-full h-[100dvh] md:h-[800px] md:max-w-[#390px] md:rounded-[40px] md:border-[10px] md:border-[#251e56] bg-[#0c0822] shadow-[0_0_40px_rgba(139,92,246,0.15)] relative overflow-hidden flex flex-col transition-all duration-300">
         
-        {/* Screen Area (Full height flex child, bright background) */}
-        <div className="flex-1 flex flex-col bg-slate-50 overflow-hidden relative">
+        {/* Screen Area (Full height flex child, deep game theme background) */}
+        <div className="flex-1 flex flex-col bg-[#0c0822] overflow-hidden relative">
           {children}
         </div>
         

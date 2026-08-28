@@ -30,21 +30,21 @@ export default function ProfileModal() {
   };
 
   return (
-    <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-end justify-center transition-all duration-300">
+    <div className="absolute inset-0 bg-[#070417]/80 backdrop-blur-xs z-50 flex items-end justify-center transition-all duration-300">
       <div
-        className={`bg-white border-t border-slate-200 rounded-t-[32px] w-full max-h-[85%] overflow-y-auto relative shadow-2xl transition-all duration-500 transform ${
+        className={`bg-[#17123a] border-t border-[#2b2067] rounded-t-[32px] w-full max-h-[85%] overflow-y-auto relative shadow-2xl transition-all duration-500 transform ${
           animate ? "translate-y-0 opacity-100" : "translate-y-full opacity-50"
         }`}
       >
         {/* Sticky Header */}
-        <div className="sticky top-0 bg-white/95 backdrop-blur-md px-5 py-3.5 flex items-center justify-between border-b border-slate-100 z-10">
+        <div className="sticky top-0 bg-[#17123a]/95 backdrop-blur-md px-5 py-3.5 flex items-center justify-between border-b border-[#2b2067] z-10">
           <div className="flex items-center gap-1.5">
-            <Award className="w-4.5 h-4.5 text-indigo-600" />
-            <h3 className="text-xs font-black text-slate-800 uppercase tracking-wide">Campus Profile</h3>
+            <Award className="w-4.5 h-4.5 text-fuchsia-400" />
+            <h3 className="text-xs font-black text-white uppercase tracking-wide">Campus Profile</h3>
           </div>
           <button
             onClick={() => setSelectedUserForModal(null)}
-            className="text-slate-400 hover:text-slate-650 rounded-full p-1.5 bg-slate-100 hover:bg-slate-200 transition"
+            className="text-slate-400 hover:text-white rounded-full p-1.5 bg-[#251e5c] transition"
           >
             <X className="w-4 h-4" />
           </button>
@@ -56,17 +56,17 @@ export default function ProfileModal() {
             <img
               src={user.avatar}
               alt={user.name}
-              className="w-16 h-16 rounded-2xl object-cover border border-slate-200 shadow-sm"
+              className="w-16 h-16 rounded-2xl object-cover border border-[#2b2067] shadow-sm"
             />
             <div className="flex-1 min-w-0">
-              <h2 className="text-lg font-black text-slate-800 truncate leading-snug">{user.name}</h2>
-              <p className="text-[11px] text-slate-450 truncate">@{user.username}</p>
+              <h2 className="text-lg font-black text-white truncate leading-snug">{user.name}</h2>
+              <p className="text-[11px] text-slate-500">@{user.username}</p>
               
               <div className="flex items-center gap-2 mt-1.5">
-                <span className="bg-indigo-50 text-indigo-600 border border-indigo-100 text-[9px] px-2.5 py-0.5 rounded-full font-bold">
+                <span className="bg-[#ec4899]/10 text-fuchsia-400 border border-[#ec4899]/20 text-[9px] px-2.5 py-0.5 rounded-full font-bold">
                   LVL {user.level}
                 </span>
-                <span className="text-slate-400 text-[10px] flex items-center gap-1 font-semibold">
+                <span className="text-slate-450 text-[10px] flex items-center gap-1 font-semibold">
                   <Calendar className="w-3.5 h-3.5" />
                   Joined {user.joinedDate}
                 </span>
@@ -76,22 +76,22 @@ export default function ProfileModal() {
 
           {/* Bio */}
           {user.bio && (
-            <div className="bg-slate-50 rounded-2xl p-3.5 border border-slate-100 mb-5">
-              <p className="text-xs text-slate-600 leading-relaxed italic font-semibold">&quot;{user.bio}&quot;</p>
+            <div className="bg-[#0c0822] rounded-2xl p-3.5 border border-[#251b5e] mb-5">
+              <p className="text-xs text-slate-300 leading-relaxed italic font-semibold">&quot;{user.bio}&quot;</p>
             </div>
           )}
 
           {/* Interests */}
           {user.interests.length > 0 && (
             <div className="mb-4.5">
-              <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1">
-                <Star className="w-3.5 h-3.5 text-indigo-600" /> Interests
+              <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1">
+                <Star className="w-3.5 h-3.5 text-fuchsia-400" /> Interests
               </h4>
               <div className="flex flex-wrap gap-1">
                 {user.interests.map((interest, idx) => (
                   <span
                     key={idx}
-                    className="bg-indigo-50 text-indigo-600 border border-indigo-100 text-[10px] px-2.5 py-1 rounded-lg font-bold shadow-xs"
+                    className="bg-indigo-955/70 text-indigo-300 border border-[#3d2f9b] text-[10px] px-2.5 py-1 rounded-lg font-bold shadow-xs"
                   >
                     {interest}
                   </span>
@@ -103,12 +103,12 @@ export default function ProfileModal() {
           {/* Skills */}
           {user.skills.length > 0 && (
             <div className="mb-4.5">
-              <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Skills & Tools</h4>
+              <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Skills & Tools</h4>
               <div className="flex flex-wrap gap-1">
                 {user.skills.map((skill, idx) => (
                   <span
                     key={idx}
-                    className="bg-slate-100 text-slate-650 border border-slate-200/60 text-[10px] px-2.5 py-1 rounded-lg font-bold"
+                    className="bg-[#0c0822] text-slate-400 border border-[#251b5e] text-[10px] px-2.5 py-1 rounded-lg font-bold"
                   >
                     {skill}
                   </span>
@@ -120,12 +120,12 @@ export default function ProfileModal() {
           {/* Hobbies */}
           {user.hobbies.length > 0 && (
             <div className="mb-5">
-              <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Hobbies</h4>
+              <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Hobbies</h4>
               <div className="flex flex-wrap gap-1">
                 {user.hobbies.map((hobby, idx) => (
                   <span
                     key={idx}
-                    className="bg-slate-100 text-slate-650 border border-slate-200/60 text-[10px] px-2.5 py-1 rounded-lg font-bold"
+                    className="bg-[#0c0822] text-slate-400 border border-[#251b5e] text-[10px] px-2.5 py-1 rounded-lg font-bold"
                   >
                     {hobby}
                   </span>
@@ -137,14 +137,14 @@ export default function ProfileModal() {
           {/* Action Buttons */}
           <div className="grid grid-cols-2 gap-3 mt-6">
             {user.isConnected ? (
-              <div className="flex items-center justify-center gap-1.5 py-3 bg-slate-150 border border-slate-200 text-emerald-600 font-extrabold rounded-xl text-xs shadow-xs">
+              <div className="flex items-center justify-center gap-1.5 py-3 bg-[#0c0822] border border-[#251b5e] text-emerald-400 font-extrabold rounded-xl text-xs shadow-xs">
                 <Check className="w-3.5 h-3.5" />
                 Connected
               </div>
             ) : (
               <button
                 onClick={() => connectWithUser(user.id)}
-                className="flex items-center justify-center gap-1.5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold rounded-xl text-xs shadow-md transition active:scale-95"
+                className="flex items-center justify-center gap-1.5 py-3 bg-[#8b5cf6] hover:bg-[#7c3aed] text-white font-extrabold rounded-xl text-xs shadow-md transition active:scale-95"
               >
                 <UserPlus className="w-3.5 h-3.5" />
                 Connect
@@ -153,7 +153,7 @@ export default function ProfileModal() {
 
             <button
               onClick={handleSendMessage}
-              className="flex items-center justify-center gap-1.5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 font-extrabold rounded-xl text-xs transition active:scale-95 shadow-xs"
+              className="flex items-center justify-center gap-1.5 py-3 bg-[#251e5c] hover:bg-[#2e2671] text-white border border-[#3b308e] font-extrabold rounded-xl text-xs transition active:scale-95 shadow-xs"
             >
               Message
             </button>
