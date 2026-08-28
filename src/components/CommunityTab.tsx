@@ -88,7 +88,7 @@ export default function CommunityTab() {
     <div className="flex-1 flex flex-col h-full overflow-hidden text-[#333136] bg-[#f8f7ff]">
       
       {/* HEADER SECTION (Tab selectors) */}
-      <div className="bg-white p-4.5 border-b border-[#c5bae8]/20 shrink-0 shadow-xs">
+      <div className="bg-white px-5.5 py-4 border-b border-[#c5bae8]/20 shrink-0 shadow-xs">
         <div className="flex items-center justify-between mb-3.5">
           <h1 className="text-lg font-black text-[#333136] tracking-wide">
             🗣️ Hub
@@ -129,7 +129,7 @@ export default function CommunityTab() {
         
         {/* 1. PEOPLE DISCOVERY SUB-TAB */}
         {activeSubTab === "people" && (
-          <div className="p-4.5 space-y-4">
+          <div className="px-5.5 py-4 space-y-4">
             
             {/* Search filter for interests */}
             <div className="relative">
@@ -237,7 +237,7 @@ export default function CommunityTab() {
 
         {/* 2. FORUM DISCUSSIONS SUB-TAB */}
         {activeSubTab === "forum" && !selectedPostId && (
-          <div className="p-4.5 space-y-4">
+          <div className="px-5.5 py-4 space-y-4">
             
             {/* Tag Filter Tabs */}
             <div className="flex gap-1.5 overflow-x-auto pb-1 shrink-0 scrollbar-none">
@@ -317,7 +317,7 @@ export default function CommunityTab() {
         {activeSubTab === "forum" && selectedPostId && selectedPost && (
           <div className="flex flex-col h-full bg-[#f8f7ff]">
             {/* Thread Header */}
-            <div className="bg-white p-3.5 border-b border-[#c5bae8]/20 flex items-center gap-3 shadow-xs">
+            <div className="bg-white px-5.5 py-3.5 border-b border-[#c5bae8]/20 flex items-center gap-3 shadow-xs">
               <button
                 onClick={() => setSelectedPostId(null)}
                 className="text-slate-400 hover:text-[#333136] p-1 hover:bg-[#f2efff] rounded-lg transition"
@@ -328,7 +328,7 @@ export default function CommunityTab() {
             </div>
 
             {/* Scroller */}
-            <div className="flex-1 overflow-y-auto p-4.5 space-y-4 scrollbar-none">
+            <div className="flex-1 overflow-y-auto px-5.5 py-4 space-y-4 scrollbar-none">
               
               {/* Original Post */}
               <div className="bg-white rounded-[32px] p-4.5 shadow-xs border border-[#c5bae8]/10">

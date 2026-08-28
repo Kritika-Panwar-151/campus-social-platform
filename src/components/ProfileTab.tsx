@@ -87,7 +87,7 @@ export default function ProfileTab() {
   const dmCount = Object.keys(messages).length;
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-y-auto p-5 text-[#333136] bg-[#f8f7ff] select-none scrollbar-none space-y-4">
+    <div className="flex-1 flex flex-col h-full overflow-y-auto px-5.5 py-4 text-[#333136] bg-[#f8f7ff] select-none scrollbar-none space-y-4">
       
       {/* 1. EDIT PROFILE SCREEN */}
       {isEditing ? (

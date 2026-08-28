@@ -69,7 +69,7 @@ export default function InboxTab() {
       
       {/* 1. THREAD LIST VIEW */}
       {!activeChatUserId ? (
-        <div className="flex-1 flex flex-col overflow-y-auto p-4.5 scrollbar-none">
+        <div className="flex-1 flex flex-col overflow-y-auto px-5.5 py-4 scrollbar-none">
           {/* Header */}
           <div className="mb-4">
             <h1 className="text-lg font-black text-[#333136] tracking-wide">
