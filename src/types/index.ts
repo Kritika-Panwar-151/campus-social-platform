@@ -12,6 +12,10 @@ export interface User {
   joinedDate: string;
   isConnected?: boolean;
   isPending?: boolean;
+  exploreStreak: number;
+  lastExploredDate?: string;
+  passportStamps: string[]; // List of location IDs stamped
+  unlockedMapTiles: string[]; // List of MapTile IDs revealed
 }
 
 export interface Experience {
@@ -47,6 +51,9 @@ export interface Location {
   tips: string[];
   isUnlocked: boolean;
   coordinates: string;
+  rarity: "Common Hotspot" | "First to Document" | "Hidden Gem" | "Secret Sanctuary";
+  isFirstEverScanned: boolean; // True if scanned first time ever by this user
+  zoneId: string; // matches MapTile id
 }
 
 export interface DiscussionPost {
@@ -77,4 +84,22 @@ export interface Badge {
   description: string;
   icon: string;
   unlockedAt?: string;
+}
+
+export interface MapTile {
+  id: string;
+  name: string;
+  coordinates: string;
+  isRevealed: boolean;
+  associatedLocationId: string;
+  icon: string;
+}
+
+export interface ScavengerQuest {
+  id: string;
+  title: string;
+  targetLocationIds: string[];
+  completedLocationIds: string[];
+  isActive: boolean;
+  rewardBadgeId: string;
 }

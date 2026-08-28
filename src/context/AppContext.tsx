@@ -1,8 +1,8 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { User, Location, DiscussionPost, Badge, Message, Comment, Experience } from "../types";
-import { MOCK_USERS, MOCK_LOCATIONS, MOCK_DISCUSSIONS, MOCK_BADGES } from "../utils/mockData";
+import { User, Location, DiscussionPost, Badge, Message, Comment, Experience, MapTile, ScavengerQuest } from "../types";
+import { MOCK_USERS, MOCK_LOCATIONS, MOCK_DISCUSSIONS, MOCK_BADGES, MOCK_MAP_TILES, MOCK_QUESTS } from "../utils/mockData";
 
 interface AppContextType {
   currentUser: User;
@@ -11,6 +11,8 @@ interface AppContextType {
   discussions: DiscussionPost[];
   messages: Record<string, Message[]>; // Key: userId
   badges: Badge[];
+  quests: ScavengerQuest[];
+  mapTiles: MapTile[];
   activeTab: string;
   setActiveTab: (tab: string) => void;
   selectedUserForModal: User | null;
@@ -43,7 +45,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   // Navigation states
-  const [activeTab, setActiveTab] = useState<string>("profile"); // Starts at profile to choose interests first
+  const [activeTab, setActiveTab] = useState<string>("profile");
   
   // UI overlays
   const [selectedUserForModal, setSelectedUserForModal] = useState<User | null>(null);
@@ -66,15 +68,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     skills: [],
     hobbies: [],
     bio: "Setup your interests to find people!",
-    joinedDate: "Today"
+    joinedDate: "Today",
+    exploreStreak: 0,
+    passportStamps: [],
+    unlockedMapTiles: []
   });
 
   const [users, setUsers] = useState<User[]>(MOCK_USERS);
   const [locations, setLocations] = useState<Location[]>(MOCK_LOCATIONS);
   const [discussions, setDiscussions] = useState<DiscussionPost[]>(MOCK_DISCUSSIONS);
   const [badges, setBadges] = useState<Badge[]>(MOCK_BADGES);
+  const [quests, setQuests] = useState<ScavengerQuest[]>(MOCK_QUESTS);
+  const [mapTiles, setMapTiles] = useState<MapTile[]>(MOCK_MAP_TILES);
   
-  // Inbox messages (Prepopulate with a few initial chats)
+  // Messages pre-populated
   const [messages, setMessages] = useState<Record<string, Message[]>>({
     user_alice: [
       {
@@ -123,6 +130,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const storedMessages = localStorage.getItem("campus_messages");
       const storedBadges = localStorage.getItem("campus_badges");
       const storedGenieCount = localStorage.getItem("campus_genie_count");
+      const storedQuests = localStorage.getItem("campus_quests");
+      const storedMapTiles = localStorage.getItem("campus_map_tiles");
 
       if (storedUser) setCurrentUser(JSON.parse(storedUser));
       if (storedUsers) setUsers(JSON.parse(storedUsers));
@@ -131,6 +140,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       if (storedMessages) setMessages(JSON.parse(storedMessages));
       if (storedBadges) setBadges(JSON.parse(storedBadges));
       if (storedGenieCount) setGenieCount(parseInt(storedGenieCount, 10));
+      if (storedQuests) setQuests(JSON.parse(storedQuests));
+      if (storedMapTiles) setMapTiles(JSON.parse(storedMapTiles));
     }
   }, []);
 
@@ -142,7 +153,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     updatedDiscussions = discussions,
     updatedMessages = messages,
     updatedBadges = badges,
-    updatedGenie = genieCount
+    updatedGenie = genieCount,
+    updatedQuests = quests,
+    updatedMapTiles = mapTiles
   ) => {
     setCurrentUser(updatedUser);
     setUsers(updatedUsers);
@@ -151,6 +164,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setMessages(updatedMessages);
     setBadges(updatedBadges);
     setGenieCount(updatedGenie);
+    setQuests(updatedQuests);
+    setMapTiles(updatedMapTiles);
 
     if (typeof window !== "undefined") {
       localStorage.setItem("campus_user", JSON.stringify(updatedUser));
@@ -160,6 +175,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem("campus_messages", JSON.stringify(updatedMessages));
       localStorage.setItem("campus_badges", JSON.stringify(updatedBadges));
       localStorage.setItem("campus_genie_count", updatedGenie.toString());
+      localStorage.setItem("campus_quests", JSON.stringify(updatedQuests));
+      localStorage.setItem("campus_map_tiles", JSON.stringify(updatedMapTiles));
     }
   };
 
@@ -258,6 +275,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Camera Scanning Place
   const scanLocation = (locationId: string) => {
+    const targetLoc = locations.find(l => l.id === locationId);
+    if (!targetLoc) return;
+
     const updatedLocations = locations.map(loc => {
       if (loc.id === locationId) {
         return { ...loc, isUnlocked: true };
@@ -265,8 +285,127 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       return loc;
     });
 
-    // Award XP
-    const userXP = currentUser.xp + 50;
+    let updatedQuests = [...quests];
+    let updatedMapTiles = [...mapTiles];
+    let updatedBadges = [...badges];
+
+    // 1. Stamp Passport if not already stamped
+    const isAlreadyStamped = currentUser.passportStamps.includes(locationId);
+    const updatedPassportStamps = isAlreadyStamped 
+      ? currentUser.passportStamps 
+      : [...currentUser.passportStamps, locationId];
+
+    // 2. Reveal map tile (Fog of war map unlock)
+    const associatedTile = mapTiles.find(t => t.associatedLocationId === locationId);
+    const updatedUnlockedMapTiles = [...currentUser.unlockedMapTiles];
+    if (associatedTile) {
+      if (!updatedUnlockedMapTiles.includes(associatedTile.id)) {
+        updatedUnlockedMapTiles.push(associatedTile.id);
+      }
+      updatedMapTiles = mapTiles.map(t => {
+        if (t.id === associatedTile.id) {
+          return { ...t, isRevealed: true };
+        }
+        return t;
+      });
+    }
+
+    // 3. XP calculation (Points for first-ever photo, smaller if already scanned)
+    const isFirstTimeScanForMe = !currentUser.passportStamps.includes(locationId);
+    let pointsAwarded = 50;
+    let firstEverScannedAward = false;
+
+    if (isFirstTimeScanForMe) {
+      if (!targetLoc.isUnlocked) {
+        // This is the FIRST user ever to identify this spot!
+        pointsAwarded = 120; // Big bonus points
+        firstEverScannedAward = true;
+      } else {
+        pointsAwarded = 60; // Standard new place scan points
+      }
+    } else {
+      pointsAwarded = 15; // Re-scan points
+    }
+
+    // 4. Update Quest progress (Freshers Scavenger Hunt)
+    updatedQuests = quests.map(q => {
+      if (q.isActive && q.targetLocationIds.includes(locationId)) {
+        const completed = q.completedLocationIds.includes(locationId)
+          ? q.completedLocationIds
+          : [...q.completedLocationIds, locationId];
+        
+        // Check if quest completed
+        const isQuestDone = q.targetLocationIds.every(id => completed.includes(id) || id === locationId);
+        if (isQuestDone && !q.completedLocationIds.every(id => completed.includes(id))) {
+          // Award quest badge
+          const badgeIndex = updatedBadges.findIndex(b => b.id === q.rewardBadgeId);
+          if (badgeIndex !== -1 && !updatedBadges[badgeIndex].unlockedAt) {
+            updatedBadges[badgeIndex] = {
+              ...updatedBadges[badgeIndex],
+              unlockedAt: new Date().toLocaleDateString()
+            };
+            setTimeout(() => {
+              showToast(`🏆 Scavenger Hunt Complete! Unlocked: ${updatedBadges[badgeIndex].name}`);
+            }, 1000);
+            pointsAwarded += 100; // Quest completion XP bonus
+          }
+        }
+
+        return { ...q, completedLocationIds: completed };
+      }
+      return q;
+    });
+
+    // 5. Update Daily Explore Streak
+    let newStreak = currentUser.exploreStreak;
+    const todayStr = new Date().toDateString();
+    
+    if (currentUser.lastExploredDate) {
+      const lastDate = new Date(currentUser.lastExploredDate);
+      const todayDate = new Date(todayStr);
+      const diffTime = Math.abs(todayDate.getTime() - lastDate.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays === 1) {
+        newStreak += 1;
+        pointsAwarded += 25; // streak bonus!
+        setTimeout(() => showToast(`🔥 Daily Streak! ${newStreak} Days (+25 XP Streak Bonus)`), 500);
+      } else if (diffDays > 1) {
+        newStreak = 1;
+        setTimeout(() => showToast(`🔥 Explore Streak started! Day 1`), 500);
+      }
+    } else {
+      newStreak = 1;
+      setTimeout(() => showToast(`🔥 Explore Streak started! Day 1`), 500);
+    }
+
+    // 6. Check full Passport Completion
+    if (updatedPassportStamps.length >= locations.length) {
+      const travIndex = updatedBadges.findIndex(b => b.id === "badge_passport_full");
+      if (travIndex !== -1 && !updatedBadges[travIndex].unlockedAt) {
+        updatedBadges[travIndex] = {
+          ...updatedBadges[travIndex],
+          unlockedAt: new Date().toLocaleDateString()
+        };
+        setTimeout(() => showToast(`🏆 Passport Completed! Unlocked: World Traveler`), 1500);
+        pointsAwarded += 100;
+      }
+    }
+
+    // 7. Check "First to Document" badge
+    if (firstEverScannedAward) {
+      const docIndex = updatedBadges.findIndex(b => b.id === "badge_first_doc");
+      if (docIndex !== -1 && !updatedBadges[docIndex].unlockedAt) {
+        updatedBadges[docIndex] = {
+          ...updatedBadges[docIndex],
+          unlockedAt: new Date().toLocaleDateString()
+        };
+        setTimeout(() => showToast(`🏆 Unlocked: Pioneer Documenter badge!`), 2000);
+      }
+    }
+
+    // Level check
+    const userXP = currentUser.xp + pointsAwarded;
     const oldLevel = currentUser.level;
     const newLevel = getLevelForXP(userXP);
     const leveledUp = newLevel > oldLevel;
@@ -274,7 +413,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const updatedUser = {
       ...currentUser,
       xp: userXP,
-      level: newLevel
+      level: newLevel,
+      exploreStreak: newStreak,
+      lastExploredDate: todayStr,
+      passportStamps: updatedPassportStamps,
+      unlockedMapTiles: updatedUnlockedMapTiles
     };
 
     if (leveledUp) {
@@ -282,15 +425,25 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
 
     // Unlock First Scan Badge
-    const badgeIdx = badges.findIndex(b => b.id === "badge_first_scan");
-    let updatedBadges = [...badges];
+    const badgeIdx = updatedBadges.findIndex(b => b.id === "badge_first_scan");
     if (badgeIdx !== -1 && !updatedBadges[badgeIdx].unlockedAt) {
       updatedBadges[badgeIdx] = { ...updatedBadges[badgeIdx], unlockedAt: new Date().toLocaleDateString() };
       showToast(`🏆 Badge Unlocked: ${updatedBadges[badgeIdx].name}!`);
     }
 
-    showToast("📸 Location scanned & identified! +50 XP");
-    saveState(updatedUser, users, updatedLocations, discussions, messages, updatedBadges);
+    showToast(`📸 Location Identified! (${targetLoc.rarity}) +${pointsAwarded} XP`);
+    
+    saveState(
+      updatedUser,
+      users,
+      updatedLocations,
+      discussions,
+      messages,
+      updatedBadges,
+      genieCount,
+      updatedQuests,
+      updatedMapTiles
+    );
     
     // Auto set as active scanned location in UI
     setSelectedLocationIdForExplorer(locationId);
@@ -348,7 +501,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       return loc;
     });
 
-    // XP & Badge Unlocks
+    // XP
     const userXP = currentUser.xp + 30;
     const oldLevel = currentUser.level;
     const newLevel = getLevelForXP(userXP);
@@ -471,13 +624,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       if (u.id === userId) {
         return {
           ...u,
-          isConnected: true // Directly connect for simulated fast interaction!
+          isConnected: true
         };
       }
       return u;
     });
 
-    // Create a new DM thread immediately if not existing
+    // Create DM thread immediately
     const updatedMessages = { ...messages };
     if (!updatedMessages[userId]) {
       updatedMessages[userId] = [
@@ -525,8 +678,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const updatedUser = { ...currentUser, xp: userXP, level: newLevel };
     if (newLevel > oldLevel) setLevelUpOverlay({ show: true, oldLevel, newLevel });
 
-    // Badge Check: "Social Butterfly" (messaging 3 peers)
-    // Count active custom threads with outgoing messages
+    // Badge Check: "Social Butterfly"
     let activeThreadsCount = 0;
     Object.keys(updatedMessages).forEach(key => {
       const activeThread = updatedMessages[key];
@@ -545,13 +697,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     saveState(updatedUser, users, locations, discussions, updatedMessages, updatedBadges);
 
-    // Mock an auto reply from the other student after a short timeout (1.5s)
+    // Mock auto reply
     setTimeout(() => {
-      const peer = users.find(u => u.id === userId);
       const peerReply: Message = {
         id: `msg_reply_${Date.now()}`,
         senderId: userId,
-        text: `Thanks for messaging! ${text ? "That sounds interesting!" : "Check that out."} Let's catch up sometime at the canteen or lab.`,
+        text: `Thanks for messaging! Let's catch up sometime at the canteen or lab.`,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
       };
 
@@ -561,7 +712,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           ...prev,
           [userId]: [...currentThread, peerReply]
         };
-        // Persist to local storage
         if (typeof window !== "undefined") {
           localStorage.setItem("campus_messages", JSON.stringify(finalMessages));
         }
@@ -570,7 +720,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }, 1500);
   };
 
-  // Genie Bot Question Asked Counter
+  // Genie Bot Question Counter
   const incrementGenieCount = () => {
     const nextCount = genieCount + 1;
     let updatedBadges = [...badges];
@@ -616,6 +766,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         discussions,
         messages,
         badges,
+        quests,
+        mapTiles,
         activeTab,
         setActiveTab,
         selectedUserForModal,
@@ -644,6 +796,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     </AppContext.Provider>
   );
 }
+
+export default AppContext;
 
 export function useApp() {
   const context = useContext(AppContext);

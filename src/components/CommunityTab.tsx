@@ -85,18 +85,18 @@ export default function CommunityTab() {
     .sort((a, b) => b.matchScore - a.matchScore);
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden text-slate-100 bg-[#070518]">
+    <div className="flex-1 flex flex-col h-full overflow-hidden text-[#333136] bg-[#f8f7ff]">
       
-      {/* HEADER SECTION (Tab selectors, clean look) */}
-      <div className="bg-[#120e2e] p-4.5 border-b border-[#1b1548]/40 shrink-0 shadow-md">
+      {/* HEADER SECTION (Tab selectors) */}
+      <div className="bg-white p-4.5 border-b border-[#c5bae8]/20 shrink-0 shadow-xs">
         <div className="flex items-center justify-between mb-3.5">
-          <h1 className="text-lg font-black text-white tracking-wide">
+          <h1 className="text-lg font-black text-[#333136] tracking-wide">
             🗣️ Hub
           </h1>
           {activeSubTab === "forum" && !selectedPostId && (
             <button
               onClick={() => setShowNewPostForm(true)}
-              className="px-3.5 py-1.5 bg-gradient-to-r from-fuchsia-600 to-indigo-650 hover:from-fuchsia-500 text-white font-black rounded-xl text-[9px] uppercase tracking-wider flex items-center gap-0.5 transition active:scale-95 shadow-sm"
+              className="px-3.5 py-1.5 bg-[#f28f5f] hover:bg-[#e07f4f] text-white font-black rounded-xl text-[9px] uppercase tracking-wider flex items-center gap-0.5 transition active:scale-95 shadow-sm"
             >
               <Plus className="w-3 h-3" /> New Post
             </button>
@@ -104,22 +104,22 @@ export default function CommunityTab() {
         </div>
         
         {/* Toggle between People recommendations and forum discussions */}
-        <div className="flex bg-[#070518] p-1 rounded-xl">
+        <div className="flex bg-[#f2efff] p-1 rounded-2xl">
           <button
             onClick={() => { setActiveSubTab("people"); setSelectedPostId(null); }}
-            className={`flex-1 py-2 text-xs font-bold rounded-lg transition flex justify-center items-center gap-1.5 ${
-              activeSubTab === "people" ? "bg-[#1d1647] text-fuchsia-400 shadow-xs" : "text-slate-500 hover:text-slate-350"
+            className={`flex-1 py-2 text-xs font-bold rounded-xl transition flex justify-center items-center gap-1.5 ${
+              activeSubTab === "people" ? "bg-white text-[#f28f5f] shadow-xs" : "text-[#635d73] hover:text-[#333136]"
             }`}
           >
             <Users className="w-3.5 h-3.5" /> Matches
           </button>
           <button
             onClick={() => setActiveSubTab("forum")}
-            className={`flex-1 py-2 text-xs font-bold rounded-lg transition flex justify-center items-center gap-1.5 ${
-              activeSubTab === "forum" ? "bg-[#1d1647] text-fuchsia-400 shadow-xs" : "text-slate-500 hover:text-slate-350"
+            className={`flex-1 py-2 text-xs font-bold rounded-xl transition flex justify-center items-center gap-1.5 ${
+              activeSubTab === "forum" ? "bg-white text-[#f28f5f] shadow-xs" : "text-[#635d73] hover:text-[#333136]"
             }`}
           >
-            <MessageSquare className="w-3.5 h-3.5" /> Community
+            <MessageSquare className="w-3.5 h-3.5" /> Discussions
           </button>
         </div>
       </div>
@@ -139,14 +139,14 @@ export default function CommunityTab() {
                 placeholder="Search classmates by interest..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="w-full bg-[#120e2e] border border-[#20174c]/50 text-xs text-slate-200 rounded-2xl pl-9 pr-4 py-3 focus:outline-hidden focus:ring-1 focus:ring-fuchsia-500 placeholder:text-slate-500 shadow-xs font-semibold"
+                className="w-full bg-white border border-[#c5bae8]/20 text-xs text-[#333136] rounded-2xl pl-9 pr-4 py-3 focus:outline-hidden focus:ring-1 focus:ring-[#f28f5f] placeholder:text-slate-405 shadow-xs font-semibold"
               />
             </div>
 
             <div className="space-y-3">
               {recommendedPeers.length === 0 ? (
-                <div className="text-center py-8 bg-[#120e2e] border border-[#2b2067]/30 p-4 rounded-xl">
-                  <p className="text-xs text-slate-500">No peers found.</p>
+                <div className="text-center py-8 bg-white border border-[#c5bae8]/20 p-4 rounded-[24px]">
+                  <p className="text-xs text-slate-400">No peers found.</p>
                 </div>
               ) : (
                 recommendedPeers.map(peer => {
@@ -154,10 +154,10 @@ export default function CommunityTab() {
                   return (
                     <div
                       key={peer.id}
-                      className="bg-[#120e2e] border border-[#231b57]/20 rounded-3xl p-4 flex flex-col hover:border-fuchsia-500/20 transition shadow-sm"
+                      className="bg-white border border-[#c5bae8]/10 rounded-[32px] p-4.5 flex flex-col hover:border-[#a27cf8]/20 transition shadow-xs"
                     >
                       {/* Top Row: Avatar & Match % */}
-                      <div className="flex items-start justify-between gap-3 mb-2">
+                      <div className="flex items-start justify-between gap-3 mb-2.5">
                         <div
                           className="flex items-center gap-3 cursor-pointer min-w-0"
                           onClick={() => setSelectedUserForModal(peer)}
@@ -165,29 +165,29 @@ export default function CommunityTab() {
                           <img
                             src={peer.avatar}
                             alt={peer.name}
-                            className="w-9 h-9 rounded-xl object-cover border border-[#2b2067]/40 shrink-0"
+                            className="w-10 h-10 rounded-xl object-cover border border-[#c5bae8]/20 shrink-0"
                           />
                           <div className="min-w-0">
-                            <h3 className="font-bold text-xs text-white hover:text-fuchsia-400 transition truncate">{peer.name}</h3>
+                            <h3 className="font-bold text-xs text-[#333136] hover:text-[#f28f5f] transition truncate">{peer.name}</h3>
                             <p className="text-[10px] text-slate-500 truncate">@{peer.username}</p>
                           </div>
                         </div>
 
                         {/* Match Meter */}
                         <div className="flex flex-col items-end shrink-0">
-                          <span className="bg-emerald-500/5 text-emerald-400 border border-emerald-500/10 px-2 py-0.5 rounded-lg text-[9px] font-black flex items-center gap-0.5 shadow-xs">
+                          <span className="bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 px-2 py-0.5 rounded-lg text-[9px] font-black flex items-center gap-0.5 shadow-xs">
                             <Sparkles className="w-2.5 h-2.5 animate-pulse" /> {percent}% Match
                           </span>
                         </div>
                       </div>
 
                       {/* Bio */}
-                      <p className="text-slate-400 text-[11px] leading-relaxed line-clamp-2 mb-3 font-semibold">
+                      <p className="text-[#635d73] text-[11px] leading-relaxed line-clamp-2 mb-3.5 font-bold">
                         {peer.bio}
                       </p>
 
                       {/* Interests matching tags */}
-                      <div className="flex flex-wrap gap-1 mb-3">
+                      <div className="flex flex-wrap gap-1 mb-3.5">
                         {peer.interests.map((interest, idx) => {
                           const matches = currentUser.interests.includes(interest);
                           return (
@@ -195,8 +195,8 @@ export default function CommunityTab() {
                               key={idx}
                               className={`text-[9px] px-2 py-0.5 rounded-md font-bold ${
                                 matches
-                                  ? "bg-indigo-950/60 text-indigo-300"
-                                  : "bg-[#070518] text-slate-550"
+                                  ? "bg-[#a27cf8]/10 text-[#a27cf8]"
+                                  : "bg-[#f2efff] text-[#635d73]"
                               }`}
                             >
                               {interest}
@@ -206,22 +206,22 @@ export default function CommunityTab() {
                       </div>
 
                       {/* Action trigger */}
-                      <div className="flex items-center justify-between border-t border-[#1d1746] pt-3 mt-1.5">
+                      <div className="flex items-center justify-between border-t border-[#c5bae8]/20 pt-3.5 mt-1">
                         <button
                           onClick={() => setSelectedUserForModal(peer)}
-                          className="text-[10px] text-fuchsia-400 hover:text-fuchsia-300 font-bold flex items-center gap-0.5"
+                          className="text-[10px] text-[#f28f5f] hover:text-[#e07f4f] font-black flex items-center gap-0.5 uppercase tracking-wider"
                         >
-                          View Profile <ArrowRight className="w-3.5 h-3.5" />
+                          View Card <ArrowRight className="w-3.5 h-3.5" />
                         </button>
 
                         {peer.isConnected ? (
-                          <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-400 py-1 px-2.5 bg-emerald-500/[0.03] rounded-xl">
+                          <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 py-1 px-2.5 bg-emerald-500/10 rounded-xl">
                             <UserCheck className="w-3 h-3" /> Connected
                           </div>
                         ) : (
                           <button
                             onClick={() => connectWithUser(peer.id)}
-                            className="bg-indigo-650 hover:bg-indigo-600 text-white font-bold py-1 px-3.5 rounded-lg text-[10px] transition active:scale-95 shadow-sm"
+                            className="bg-[#f28f5f] hover:bg-[#e07f4f] text-white font-black py-1.5 px-4 rounded-xl text-[9px] uppercase tracking-wider transition active:scale-95 shadow-sm"
                           >
                             Connect
                           </button>
@@ -245,10 +245,10 @@ export default function CommunityTab() {
                 <button
                   key={tag}
                   onClick={() => setFilterTag(tag)}
-                  className={`text-[9px] px-3.5 py-1.5 rounded-xl border font-bold shrink-0 transition ${
+                  className={`text-[9px] px-3.5 py-1.5 rounded-xl border font-black uppercase tracking-wider shrink-0 transition ${
                     filterTag === tag
-                      ? "bg-[#8b5cf6] text-white border-[#8b5cf6]"
-                      : "bg-[#120e2e] text-slate-400 border-[#231b57]/20 hover:text-slate-300 shadow-xs"
+                      ? "bg-[#a27cf8] text-white border-[#a27cf8]"
+                      : "bg-white text-[#635d73] border-[#c5bae8]/20 hover:text-[#333136] shadow-xs"
                   }`}
                 >
                   #{tag}
@@ -259,19 +259,19 @@ export default function CommunityTab() {
             {/* Discussions Feed */}
             <div className="space-y-3">
               {filteredPosts.length === 0 ? (
-                <p className="text-xs text-slate-500 text-center py-6">No discussions in this category yet.</p>
+                <p className="text-xs text-[#635d73] text-center py-6">No discussions yet.</p>
               ) : (
                 filteredPosts.map(post => (
                   <div
                     key={post.id}
-                    className="bg-[#120e2e] border border-[#231b57]/15 rounded-3xl p-4 hover:border-fuchsia-500/20 transition cursor-pointer shadow-sm animate-fade-in"
+                    className="bg-white border border-[#c5bae8]/10 rounded-[32px] p-4.5 hover:border-[#a27cf8]/20 transition cursor-pointer shadow-xs"
                     onClick={() => setSelectedPostId(post.id)}
                   >
-                    <div className="flex items-center gap-2.5 mb-2">
+                    <div className="flex items-center gap-2.5 mb-2.5">
                       <img
                         src={post.authorAvatar}
                         alt={post.authorName}
-                        className="w-7 h-7 rounded-lg object-cover cursor-pointer shrink-0"
+                        className="w-7 h-7 rounded-lg object-cover cursor-pointer shrink-0 border border-[#c5bae8]/20"
                         onClick={(e) => {
                           e.stopPropagation();
                           const author = users.find(u => u.name === post.authorName);
@@ -280,29 +280,29 @@ export default function CommunityTab() {
                       />
                       <div>
                         <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-[10px] text-slate-200">{post.authorName}</span>
-                          <span className="bg-indigo-950/70 text-[8px] text-indigo-300 font-extrabold px-1.5 py-0.5 rounded-md uppercase">
+                          <span className="font-bold text-[10px] text-[#333136]">{post.authorName}</span>
+                          <span className="bg-[#a27cf8]/10 text-[#a27cf8] text-[8px] font-black px-1.5 py-0.5 rounded-md uppercase">
                             {post.tag}
                           </span>
                         </div>
-                        <span className="text-[9px] text-slate-500">{post.timestamp}</span>
+                        <span className="text-[9px] text-[#635d73] font-bold">{post.timestamp}</span>
                       </div>
                     </div>
 
-                    <h3 className="font-bold text-xs text-white leading-snug mb-1 hover:text-fuchsia-400 transition">
+                    <h3 className="font-black text-xs text-[#333136] leading-snug mb-1 hover:text-[#f28f5f] transition">
                       {post.title}
                     </h3>
-                    <p className="text-slate-400 text-[11px] leading-relaxed line-clamp-3 font-semibold">
+                    <p className="text-[#635d73] text-[11px] leading-relaxed line-clamp-3 font-semibold">
                       {post.content}
                     </p>
 
-                    <div className="flex items-center gap-4 mt-3 border-t border-[#1d1746] pt-2.5 text-[8.5px] text-[#a59ef5] font-extrabold uppercase">
+                    <div className="flex items-center gap-4 mt-3.5 border-t border-[#c5bae8]/25 pt-3 text-[8.5px] text-[#a27cf8] font-black uppercase tracking-wider">
                       <span className="flex items-center gap-1">
-                        <Heart className="w-3.5 h-3.5 text-fuchsia-450 fill-current" />
+                        <Heart className="w-3.5 h-3.5 text-[#f28f5f] fill-current" />
                         {post.likes} Likes
                       </span>
                       <span className="flex items-center gap-1">
-                        <MessageSquare className="w-3.5 h-3.5 text-slate-500" />
+                        <MessageSquare className="w-3.5 h-3.5 text-slate-400" />
                         {post.comments.length} Replies
                       </span>
                     </div>
@@ -315,52 +315,52 @@ export default function CommunityTab() {
 
         {/* 3. DEDICATED INDIVIDUAL POST DETAIL VIEW */}
         {activeSubTab === "forum" && selectedPostId && selectedPost && (
-          <div className="flex flex-col h-full bg-[#070518]">
+          <div className="flex flex-col h-full bg-[#f8f7ff]">
             {/* Thread Header */}
-            <div className="bg-[#120e2e] p-3.5 border-b border-[#1b1548]/40 flex items-center gap-3 shadow-xs">
+            <div className="bg-white p-3.5 border-b border-[#c5bae8]/20 flex items-center gap-3 shadow-xs">
               <button
                 onClick={() => setSelectedPostId(null)}
-                className="text-slate-400 hover:text-white p-1 hover:bg-[#1d1647] rounded-lg transition"
+                className="text-slate-400 hover:text-[#333136] p-1 hover:bg-[#f2efff] rounded-lg transition"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
-              <span className="text-xs font-bold text-slate-350">Discussion Thread</span>
+              <span className="text-xs font-black text-[#333136] uppercase tracking-wider">Thread Details</span>
             </div>
 
             {/* Scroller */}
-            <div className="flex-1 overflow-y-auto p-4.5 space-y-4.5 scrollbar-none">
+            <div className="flex-1 overflow-y-auto p-4.5 space-y-4 scrollbar-none">
               
               {/* Original Post */}
-              <div className="bg-[#120e2e] rounded-3xl p-4.5 shadow-sm">
+              <div className="bg-white rounded-[32px] p-4.5 shadow-xs border border-[#c5bae8]/10">
                 <div className="flex items-center gap-2.5 mb-3">
                   <img
                     src={selectedPost.authorAvatar}
                     alt={selectedPost.authorName}
-                    className="w-7 h-7 rounded-lg object-cover cursor-pointer shrink-0 border border-[#2b2067]/40"
+                    className="w-7 h-7 rounded-lg object-cover border border-[#c5bae8]/20 cursor-pointer shrink-0"
                     onClick={() => {
                       const author = users.find(u => u.name === selectedPost.authorName);
                       if (author) setSelectedUserForModal(author);
                     }}
                   />
                   <div>
-                    <span className="font-bold text-xs text-white block">{selectedPost.authorName}</span>
-                    <span className="text-[9px] text-slate-500">{selectedPost.timestamp}</span>
+                    <span className="font-bold text-xs text-[#333136] block">{selectedPost.authorName}</span>
+                    <span className="text-[9px] text-[#635d73] font-bold">{selectedPost.timestamp}</span>
                   </div>
-                  <span className="ml-auto bg-indigo-950/70 text-indigo-300 text-[8px] font-extrabold px-2 py-0.5 rounded-md uppercase">
+                  <span className="ml-auto bg-[#a27cf8]/10 text-[#a27cf8] text-[8px] font-black px-2 py-0.5 rounded-md uppercase">
                     {selectedPost.tag}
                   </span>
                 </div>
 
-                <h2 className="text-sm font-black text-white leading-snug mb-2">
+                <h2 className="text-sm font-black text-[#333136] leading-snug mb-2">
                   {selectedPost.title}
                 </h2>
-                <p className="text-slate-300 text-xs leading-relaxed whitespace-pre-wrap font-medium">
+                <p className="text-[#635d73] text-xs leading-relaxed whitespace-pre-wrap font-bold">
                   {selectedPost.content}
                 </p>
 
-                <div className="flex items-center gap-3 mt-4 text-[9px] text-slate-500 font-bold border-t border-[#1d1746] pt-3">
+                <div className="flex items-center gap-3 mt-4 text-[9px] text-slate-500 font-bold border-t border-[#c5bae8]/25 pt-3">
                   <span className="flex items-center gap-1">
-                    <Heart className="w-3.5 h-3.5 text-fuchsia-500 fill-current" />
+                    <Heart className="w-3.5 h-3.5 text-[#f28f5f] fill-current" />
                     {selectedPost.likes} Likes
                   </span>
                 </div>
@@ -368,19 +368,19 @@ export default function CommunityTab() {
 
               {/* Comments/Replies Feed */}
               <div className="space-y-2">
-                <h3 className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">
+                <h3 className="text-[9px] font-bold text-[#635d73] uppercase tracking-widest mb-1">
                   Replies ({selectedPost.comments.length})
                 </h3>
 
                 {selectedPost.comments.length === 0 ? (
-                  <p className="text-xs text-slate-550 text-center py-4">No replies yet.</p>
+                  <p className="text-xs text-[#635d73] text-center py-4">No replies yet.</p>
                 ) : (
                   selectedPost.comments.map(c => (
-                    <div key={c.id} className="bg-[#120e2e]/50 p-3 rounded-2xl flex gap-2.5 shadow-xs">
+                    <div key={c.id} className="bg-white border border-[#c5bae8]/10 p-3.5 rounded-[24px] flex gap-2.5 shadow-xs">
                       <img
                         src={c.userAvatar}
                         alt={c.userName}
-                        className="w-6 h-6 rounded-md object-cover cursor-pointer shrink-0 border border-[#2b2067]/30"
+                        className="w-6 h-6 rounded-lg object-cover cursor-pointer shrink-0 border border-[#c5bae8]/20"
                         onClick={() => {
                           const author = users.find(u => u.name === c.userName);
                           if (author) setSelectedUserForModal(author);
@@ -388,10 +388,10 @@ export default function CommunityTab() {
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-0.5">
-                          <span className="font-bold text-xs text-slate-200">{c.userName}</span>
-                          <span className="text-[8px] text-slate-500">{c.timestamp}</span>
+                          <span className="font-bold text-xs text-[#333136]">{c.userName}</span>
+                          <span className="text-[8px] text-[#635d73] font-bold">{c.timestamp}</span>
                         </div>
-                        <p className="text-xs text-slate-300 leading-normal">{c.text}</p>
+                        <p className="text-xs text-[#635d73] leading-relaxed font-bold">{c.text}</p>
                       </div>
                     </div>
                   ))
@@ -400,18 +400,18 @@ export default function CommunityTab() {
             </div>
 
             {/* Comment Form */}
-            <form onSubmit={handlePostReply} className="p-3 bg-[#120e2e] border-t border-[#1b1548]/40 flex gap-2 items-center shadow-md">
+            <form onSubmit={handlePostReply} className="p-3 bg-white border-t border-[#c5bae8]/20 flex gap-2 items-center shadow-md">
               <input
                 type="text"
-                placeholder="Write a comment..."
+                placeholder="Write a reply..."
                 value={replyText}
                 onChange={e => setReplyText(e.target.value)}
-                className="flex-1 bg-[#070518] border border-[#20174c]/50 text-xs text-white rounded-xl px-3.5 py-2.5 focus:outline-hidden focus:ring-1 focus:ring-fuchsia-500 placeholder:text-slate-550"
+                className="flex-1 bg-[#f8f7ff] border border-[#c5bae8]/20 text-xs text-[#333136] rounded-xl px-3.5 py-2.5 focus:outline-hidden focus:ring-1 focus:ring-[#f28f5f] placeholder:text-[#635d73]"
               />
               <button
                 type="submit"
                 disabled={!replyText.trim()}
-                className="px-3.5 py-2 bg-[#8b5cf6] disabled:bg-[#1a1444] disabled:text-slate-500 text-white font-bold rounded-xl text-xs transition active:scale-95 shrink-0"
+                className="px-4 py-2 bg-[#f28f5f] disabled:bg-slate-100 disabled:text-slate-400 text-white font-black rounded-xl text-xs uppercase tracking-wider transition active:scale-95 shrink-0"
               >
                 Send
               </button>
@@ -423,40 +423,40 @@ export default function CommunityTab() {
 
       {/* CREATE NEW DISCUSSION POST DRAFT DIALOG OVERLAY */}
       {showNewPostForm && (
-        <div className="absolute inset-0 bg-[#070518]/85 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div className="absolute inset-0 bg-[#070518]/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
           <form
             onSubmit={handleCreatePost}
-            className="bg-[#120e2e] border border-[#231b57]/40 rounded-3xl p-5 w-full max-w-xs relative space-y-3.5 shadow-2xl"
+            className="bg-white border border-[#c5bae8]/25 rounded-[32px] p-5 w-full max-w-xs relative space-y-3.5 shadow-2xl"
           >
-            <div className="flex justify-between items-center pb-2 border-b border-[#1d1746]">
-              <h3 className="font-bold text-xs text-white uppercase tracking-wide">New Discussion</h3>
+            <div className="flex justify-between items-center pb-2 border-b border-[#c5bae8]/20">
+              <h3 className="font-black text-xs text-[#333136] uppercase tracking-wide">New Discussion</h3>
               <button
                 type="button"
                 onClick={() => setShowNewPostForm(false)}
-                className="text-slate-400 hover:text-white text-xs font-bold"
+                className="text-[#635d73] hover:text-[#333136] text-xs font-black uppercase"
               >
                 Close
               </button>
             </div>
 
             <div>
-              <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Title</label>
+              <label className="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Title</label>
               <input
                 type="text"
-                placeholder="Question topic..."
+                placeholder="What is your topic?"
                 value={newTitle}
                 onChange={e => setNewTitle(e.target.value)}
                 required
-                className="w-full bg-[#070518] border border-[#20174c]/50 text-xs text-white rounded-xl px-3 py-2 focus:outline-hidden focus:ring-1 focus:ring-fuchsia-500 placeholder:text-slate-550"
+                className="w-full bg-[#f8f7ff] border border-[#c5bae8]/20 text-xs text-[#333136] rounded-xl px-3 py-2.5 focus:outline-hidden focus:ring-1 focus:ring-[#f28f5f] placeholder:text-slate-450"
               />
             </div>
 
             <div>
-              <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Tag Category</label>
+              <label className="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Tag Category</label>
               <select
                 value={newTag}
                 onChange={e => setNewTag(e.target.value)}
-                className="w-full bg-[#070518] border border-[#20174c]/50 text-xs text-white rounded-xl px-3 py-2 focus:outline-hidden focus:ring-1 focus:ring-fuchsia-500"
+                className="w-full bg-[#f8f7ff] border border-[#c5bae8]/20 text-xs text-[#333136] rounded-xl px-3 py-2.5 focus:outline-hidden focus:ring-1 focus:ring-[#f28f5f]"
               >
                 <option value="Q&A">#Q&A</option>
                 <option value="Hackathons">#Hackathons</option>
@@ -465,20 +465,20 @@ export default function CommunityTab() {
             </div>
 
             <div>
-              <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Content Details</label>
+              <label className="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Content Details</label>
               <textarea
                 placeholder="Details of your post..."
                 value={newContent}
                 onChange={e => setNewContent(e.target.value)}
                 required
-                className="w-full bg-[#070518] border border-[#20174c]/50 text-xs text-white rounded-xl px-3 py-2 focus:outline-hidden focus:ring-1 focus:ring-fuchsia-500 h-24 resize-none placeholder:text-slate-550"
+                className="w-full bg-[#f8f7ff] border border-[#c5bae8]/20 text-xs text-[#333136] rounded-xl px-3 py-2.5 h-24 resize-none focus:outline-hidden focus:ring-1 focus:ring-[#f28f5f] placeholder:text-slate-455"
               />
             </div>
 
             <button
               type="submit"
               disabled={!newTitle.trim() || !newContent.trim()}
-              className="w-full py-2.5 bg-[#8b5cf6] disabled:bg-[#1a1444] disabled:text-slate-500 text-white font-bold rounded-xl text-xs transition active:scale-95 shadow-sm"
+              className="w-full py-2.5 bg-[#f28f5f] disabled:bg-slate-100 disabled:text-slate-400 text-white font-black rounded-xl text-xs uppercase tracking-wider transition active:scale-95 shadow-sm"
             >
               Publish Post (+30 XP)
             </button>

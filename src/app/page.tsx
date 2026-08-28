@@ -39,23 +39,22 @@ function CampusAppContent() {
     }
   };
 
-  // Check if there are any messages where the last message isn't read
   const hasUnreadMessages = Object.keys(messages).some(key => {
     const thread = messages[key];
     if (thread.length === 0) return false;
     const last = thread[thread.length - 1];
-    return last.senderId !== "me" && key === "user_alice"; // mock unread dot on initial load for Alice
+    return last.senderId !== "me" && key === "user_alice"; // mock unread dot
   });
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#070518] relative">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#f8f7ff] relative">
       
-      {/* Toast Notification Container (Bound to phone screen coordinates, sleek pill style) */}
+      {/* Toast Notification Container (Dynamic Island Pill style) */}
       {toastNotification && (
         <div className="absolute top-4 left-4 right-4 z-50 animate-[slideDown_0.3s_ease-out]">
-          <div className="bg-[#120e2e]/95 border border-[#2b2067] text-white px-4 py-2.5 rounded-full flex items-center justify-center gap-2 shadow-2xl backdrop-blur-md max-w-fit mx-auto">
-            <div className="w-1.5 h-1.5 rounded-full bg-fuchsia-400 animate-ping"></div>
-            <p className="text-[10px] font-bold leading-normal tracking-wide">{toastNotification}</p>
+          <div className="bg-white border border-[#a27cf8]/20 text-[#333136] px-4 py-2.5 rounded-full flex items-center justify-center gap-2 shadow-lg backdrop-blur-md max-w-fit mx-auto">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#f28f5f] animate-ping"></div>
+            <p className="text-[10px] font-black leading-normal tracking-wide uppercase">{toastNotification}</p>
           </div>
         </div>
       )}
@@ -65,73 +64,73 @@ function CampusAppContent() {
         {renderTabContent()}
       </div>
 
-      {/* BOTTOM TAB NAVIGATION BAR (Sleek dark violet with soft violet active state) */}
-      <div className="bg-[#070518]/95 backdrop-blur-md border-t border-[#1b1548]/40 flex items-center justify-around shrink-0 px-3 select-none z-10 pt-2 pb-6 md:pb-3 h-auto">
+      {/* BOTTOM TAB NAVIGATION BAR (Pure White with Candied Yam orange active state) */}
+      <div className="bg-white/95 backdrop-blur-md border-t border-[#c5bae8]/20 flex items-center justify-around shrink-0 px-3 select-none z-10 pt-2.5 pb-6 md:pb-3 h-auto">
         
         {/* TAB 1: EXPLORER */}
         <button
           onClick={() => setActiveTab("explorer")}
           className={`flex flex-col items-center justify-center flex-1 py-1 transition-all duration-200 ${
-            activeTab === "explorer" ? "text-fuchsia-400 scale-105" : "text-slate-500 hover:text-slate-400"
+            activeTab === "explorer" ? "text-[#f28f5f] scale-105" : "text-[#635d73] hover:text-[#333136]"
           }`}
         >
           <Compass className="w-4.5 h-4.5 mb-0.5" />
-          <span className="text-[8.5px] font-bold tracking-wide">Explorer</span>
+          <span className="text-[8.5px] font-black tracking-wide">Explorer</span>
         </button>
 
         {/* TAB 2: COMMUNITY */}
         <button
           onClick={() => setActiveTab("social")}
           className={`flex flex-col items-center justify-center flex-1 py-1 transition-all duration-200 ${
-            activeTab === "social" ? "text-fuchsia-400 scale-105" : "text-slate-500 hover:text-slate-400"
+            activeTab === "social" ? "text-[#f28f5f] scale-105" : "text-[#635d73] hover:text-[#333136]"
           }`}
         >
           <Users className="w-4.5 h-4.5 mb-0.5" />
-          <span className="text-[8.5px] font-bold tracking-wide">Campus</span>
+          <span className="text-[8.5px] font-black tracking-wide">Campus</span>
         </button>
 
         {/* TAB 3: GENIE CHATBOT */}
         <button
           onClick={() => setActiveTab("genie")}
           className={`flex flex-col items-center justify-center flex-1 py-1 transition-all duration-200 relative ${
-            activeTab === "genie" ? "text-fuchsia-400 scale-105" : "text-slate-500 hover:text-slate-400"
+            activeTab === "genie" ? "text-[#f28f5f] scale-105" : "text-[#635d73] hover:text-[#333136]"
           }`}
         >
-          <div className="absolute -top-3 p-1.5 bg-gradient-to-r from-fuchsia-500 to-pink-500 rounded-full shadow-lg shadow-fuchsia-500/10">
+          <div className="absolute -top-3 p-1.5 bg-[#f28f5f] rounded-full shadow-md shadow-[#f28f5f]/20">
             <Sparkles className="w-4 h-4 text-white" />
           </div>
-          <span className="text-[8.5px] font-bold tracking-wide mt-5">Genie</span>
+          <span className="text-[8.5px] font-black tracking-wide mt-5">Genie</span>
         </button>
 
         {/* TAB 4: INBOX */}
         <button
           onClick={() => setActiveTab("inbox")}
           className={`flex flex-col items-center justify-center flex-1 py-1 transition-all duration-200 relative ${
-            activeTab === "inbox" ? "text-fuchsia-400 scale-105" : "text-slate-500 hover:text-slate-400"
+            activeTab === "inbox" ? "text-[#f28f5f] scale-105" : "text-[#635d73] hover:text-[#333136]"
           }`}
         >
           <MessageSquare className="w-4.5 h-4.5 mb-0.5" />
           {hasUnreadMessages && (
-            <span className="absolute top-1 right-5.5 w-1.5 h-1.5 rounded-full bg-fuchsia-500 border border-[#070518] animate-pulse"></span>
+            <span className="absolute top-1 right-5.5 w-1.5 h-1.5 rounded-full bg-[#f28f5f] border border-white animate-pulse"></span>
           )}
-          <span className="text-[8.5px] font-bold tracking-wide">Inbox</span>
+          <span className="text-[8.5px] font-black tracking-wide">Inbox</span>
         </button>
 
         {/* TAB 5: PROFILE */}
         <button
           onClick={() => setActiveTab("profile")}
           className={`flex flex-col items-center justify-center flex-1 py-1 transition-all duration-200 ${
-            activeTab === "profile" ? "text-fuchsia-400 scale-105" : "text-slate-500 hover:text-slate-400"
+            activeTab === "profile" ? "text-[#f28f5f] scale-105" : "text-[#635d73] hover:text-[#333136]"
           }`}
         >
           <img
             src={currentUser.avatar}
             alt="My Avatar"
             className={`w-5 h-5 rounded-full object-cover mb-0.5 border ${
-              activeTab === "profile" ? "border-fuchsia-500" : "border-[#1b1548]/40"
+              activeTab === "profile" ? "border-[#f28f5f]" : "border-[#c5bae8]/20"
             }`}
           />
-          <span className="text-[8.5px] font-bold tracking-wide">Profile</span>
+          <span className="text-[8.5px] font-black tracking-wide">Profile</span>
         </button>
 
       </div>

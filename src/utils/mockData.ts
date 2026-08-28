@@ -1,4 +1,4 @@
-import { User, Location, DiscussionPost, Badge } from "../types";
+import { User, Location, DiscussionPost, Badge, MapTile, ScavengerQuest } from "../types";
 
 export const MOCK_USERS: User[] = [
   {
@@ -13,7 +13,10 @@ export const MOCK_USERS: User[] = [
     hobbies: ["Chess", "Hiking", "Specialty Coffee"],
     bio: "CS sophomore | Passionate about full-stack development and NLP | Let's build something cool!",
     joinedDate: "Sep 2025",
-    isConnected: true
+    isConnected: true,
+    exploreStreak: 3,
+    passportStamps: ["loc_ai_lab", "loc_library"],
+    unlockedMapTiles: ["tile_engineering", "tile_library"]
   },
   {
     id: "user_david",
@@ -27,7 +30,10 @@ export const MOCK_USERS: User[] = [
     hobbies: ["Anime", "Table Tennis", "Drone Flying"],
     bio: "Electrical Engineering Senior | VP of the Campus Robotics & Maker Club | Hardware geek.",
     joinedDate: "Mar 2023",
-    isConnected: false
+    isConnected: false,
+    exploreStreak: 1,
+    passportStamps: ["loc_ai_lab"],
+    unlockedMapTiles: ["tile_engineering"]
   },
   {
     id: "user_sophia",
@@ -41,7 +47,10 @@ export const MOCK_USERS: User[] = [
     hobbies: ["Street Photography", "Sketching", "Acoustic Guitar"],
     bio: "Interaction Design Student | Capturing campus life frame by frame | Always down for cafe hops.",
     joinedDate: "Oct 2025",
-    isConnected: false
+    isConnected: false,
+    exploreStreak: 0,
+    passportStamps: ["loc_library"],
+    unlockedMapTiles: ["tile_library"]
   },
   {
     id: "user_jordan",
@@ -55,7 +64,10 @@ export const MOCK_USERS: User[] = [
     hobbies: ["PC Gaming", "Bass Guitar", "Retro Tech"],
     bio: "Cybersecurity Analyst major | CTF team captain | Terminal enthusiast. Emacs > Vim.",
     joinedDate: "Sep 2022",
-    isConnected: true
+    isConnected: true,
+    exploreStreak: 2,
+    passportStamps: ["loc_ai_lab", "loc_library"],
+    unlockedMapTiles: ["tile_engineering", "tile_library"]
   },
   {
     id: "user_elena",
@@ -69,7 +81,10 @@ export const MOCK_USERS: User[] = [
     hobbies: ["Reading Novels", "Rowing", "Gardening"],
     bio: "Data Science Freshman | Keen on statistical learning theory and deep learning. Let's study math!",
     joinedDate: "Jan 2026",
-    isConnected: false
+    isConnected: false,
+    exploreStreak: 0,
+    passportStamps: [],
+    unlockedMapTiles: []
   }
 ];
 
@@ -133,7 +148,10 @@ export const MOCK_LOCATIONS: Location[] = [
       "The corner cabinet has free snack reserves on Wednesdays!"
     ],
     isUnlocked: true,
-    coordinates: "Room C-302"
+    coordinates: "Room C-302",
+    rarity: "First to Document",
+    isFirstEverScanned: false,
+    zoneId: "tile_engineering"
   },
   {
     id: "loc_library",
@@ -177,7 +195,10 @@ export const MOCK_LOCATIONS: Location[] = [
       "Power outlets are under the desk flaps; push them down to click open."
     ],
     isUnlocked: true,
-    coordinates: "East Wing, Level 2"
+    coordinates: "East Wing, Level 2",
+    rarity: "Common Hotspot",
+    isFirstEverScanned: false,
+    zoneId: "tile_library"
   },
   {
     id: "loc_canteen",
@@ -221,7 +242,10 @@ export const MOCK_LOCATIONS: Location[] = [
       "The charging points are only at the round wooden tables in the back."
     ],
     isUnlocked: false,
-    coordinates: "Hub Area A"
+    coordinates: "Hub Area A",
+    rarity: "Hidden Gem",
+    isFirstEverScanned: false,
+    zoneId: "tile_canteen"
   },
   {
     id: "loc_amphitheater",
@@ -241,7 +265,7 @@ export const MOCK_LOCATIONS: Location[] = [
         userId: "user_jordan",
         userName: "Jordan Lee",
         userAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=120",
-        text: "The annual Battle of the Bands happens here! On clear autumn days, reading here is therapeutic. Keep an eye out for squirrels, they steal bagels.",
+        text: "The Battle of the Bands happens here! Reading here is therapeutic. Keep an eye out for squirrels, they steal bagels.",
         timestamp: "5 days ago",
         likes: 22
       }
@@ -255,7 +279,10 @@ export const MOCK_LOCATIONS: Location[] = [
       "There are free acoustic guitar plug-in stations for anyone to use!"
     ],
     isUnlocked: false,
-    coordinates: "Plaza Center"
+    coordinates: "Plaza Center",
+    rarity: "Secret Sanctuary",
+    isFirstEverScanned: false,
+    zoneId: "tile_amphitheater"
   }
 ];
 
@@ -265,8 +292,8 @@ export const MOCK_DISCUSSIONS: DiscussionPost[] = [
     authorId: "user_alice",
     authorName: "Alice Carter",
     authorAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=120",
-    title: "Looking for teammates for the upcoming Campus Fintech Hackathon!",
-    content: "Hey everyone! The Fintech Hackathon is next weekend (Sep 5-7). I'm planning to build a micro-credit platform for campus club budgets using Next.js and Flask. Looking for a UI/UX designer (familiar with Figma) and someone comfortable with database design/APIs. We'll have free pizza and coffee supplied by the sponsors! Let me know if you are interested or drop your interests below.",
+    title: "Teammates for the upcoming Campus Fintech Hackathon!",
+    content: "Hey everyone! The Fintech Hackathon is next weekend (Sep 5-7). I'm planning to build a micro-credit platform for campus club budgets using Next.js and Flask. Looking for a UI/UX designer and someone comfortable with database APIs.",
     tag: "Hackathons",
     likes: 8,
     comments: [
@@ -295,7 +322,7 @@ export const MOCK_DISCUSSIONS: DiscussionPost[] = [
     authorName: "David Kim",
     authorAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=120",
     title: "Intro to Arduino Workshop on Tuesday - Engineering Block C Lounge",
-    content: "The Campus Robotics club is hosting a hands-on intro to microcontrollers. We'll be supplying Arduino Unos, breadboards, and basic sensors. No coding background required, we'll teach you how to blink LEDs, read temperature sensors, and write simple loops. Space is limited to 25 people so RSVP. It starts at 6:30 PM.",
+    content: "Robotics club is hosting a microcontrollers workshop. We'll be supplying Arduino Unos and basic sensors. No coding background required!",
     tag: "Workshops",
     likes: 14,
     comments: [
@@ -317,27 +344,6 @@ export const MOCK_DISCUSSIONS: DiscussionPost[] = [
       }
     ],
     timestamp: "2 days ago"
-  },
-  {
-    id: "post_3",
-    authorId: "user_elena",
-    authorName: "Elena Rostova",
-    authorAvatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=120",
-    title: "Best study spots on campus with high-speed Wi-Fi?",
-    content: "Hi all! I'm a freshman and I find the library quiet zone a bit too tense. I need places where I can download large PyTorch models while enjoying a hot drink. Where do you all recommend that doesn't have horrible connection speeds?",
-    tag: "Q&A",
-    likes: 5,
-    comments: [
-      {
-        id: "c_d5",
-        userId: "user_alice",
-        userName: "Alice Carter",
-        userAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=120",
-        text: "The AI Lab is exactly what you need. Very fast ethernet and Wi-Fi, beanbags, and coffee. Plus you'll find lots of ML students there.",
-        timestamp: "5 hours ago"
-      }
-    ],
-    timestamp: "12 hours ago"
   }
 ];
 
@@ -349,47 +355,54 @@ export const MOCK_BADGES: Badge[] = [
     icon: "Camera"
   },
   {
-    id: "badge_community_voice",
-    name: "Campus Voice",
-    description: "Share an experience or post a community discussion.",
-    icon: "MessageSquare"
+    id: "badge_passport_full",
+    name: "World Traveler",
+    description: "Collect all unique stamps in your Campus Passport.",
+    icon: "Map"
   },
   {
-    id: "badge_genie_bff",
-    name: "Genie Whisperer",
-    description: "Ask the Genie chatbot 3 or more campus questions.",
-    icon: "Sparkles"
-  },
-  {
-    id: "badge_social_butterfly",
-    name: "Networker",
-    description: "Connect and start direct messaging with a peer.",
-    icon: "Users"
-  },
-  {
-    id: "badge_level_3",
-    name: "Campus Guide",
-    description: "Reach level 3 by accumulating 250 XP.",
+    id: "badge_first_doc",
+    name: "Pioneer Documenter",
+    description: "Be the first to scan and document a legendary hidden spot.",
     icon: "Award"
+  },
+  {
+    id: "badge_freshers_hunt",
+    name: "Scavenger Master",
+    description: "Complete the Freshers' Week Scavenger Hunt.",
+    icon: "Sparkles"
+  }
+];
+
+export const MOCK_MAP_TILES: MapTile[] = [
+  { id: "tile_engineering", name: "Engineering Sector", coordinates: "C-302", isRevealed: true, associatedLocationId: "loc_ai_lab", icon: "Cpu" },
+  { id: "tile_library", name: "Library Hub", coordinates: "L-201", isRevealed: true, associatedLocationId: "loc_library", icon: "BookOpen" },
+  { id: "tile_canteen", name: "Canteen Area", coordinates: "H-101", isRevealed: false, associatedLocationId: "loc_canteen", icon: "Coffee" },
+  { id: "tile_amphitheater", name: "Outdoor Amp", coordinates: "P-502", isRevealed: false, associatedLocationId: "loc_amphitheater", icon: "Music" }
+];
+
+export const MOCK_QUESTS: ScavengerQuest[] = [
+  {
+    id: "quest_freshers",
+    title: "Freshers' Week Hunt",
+    targetLocationIds: ["loc_ai_lab", "loc_library", "loc_canteen"],
+    completedLocationIds: [],
+    isActive: true,
+    rewardBadgeId: "badge_freshers_hunt"
   }
 ];
 
 export const GENIE_RESPONSES: Record<string, string> = {
-  "where is the ai lab?": "The **Robotics & AI Research Lab** is located in **Engineering Block C, 3rd Floor (Room C-302)**. It features heavy GPU clusters and robotic arms. Scan its image on the Explorer tab to unlock student experiences!",
-  "who teaches database management?": "Database Management (CS302) is taught by **Dr. Evelyn Ross** on Mon/Wed from 10:00 AM - 11:30 AM in **IT Hall, Room 102**. Her office hours are Tue/Thu 2:00 PM - 4:00 PM in IT Hall 304.",
-  "what clubs can i join if i'm interested in robotics?": "You should definitely connect with the **Campus Robotics & Maker Club**! They are hosted in Engineering Block C. David Kim is the Vice President. You can find David on the People tab and shoot him a DM!",
-  "where can i print documents on campus?": "High-volume printing is available at the **Central Library (1st Floor)** and the **Student Union Lounge**. Both use student card login and charge \$0.05 per B&W page and \$0.20 per color page.",
-  "how do i book a study room?": "Go to the library website or scan the QR code located next to the doors of the study pods on the **2nd Floor Central Library**. Bookings are free, but limited to 3 hours per student per day.",
-  "what is the wi-fi password?": "Select the SSID **'Campus_Student_Secure'**. Log in using your campus email credentials (e.g. your student ID/alias and portal password). Guests can connect to 'Campus_Guest' after a quick SMS sign-in.",
-  "where is the gym?": "The **Campus Recreation Center (Gym)** is located at the South Wing of the Student Hub. It is free for all enrolled students. Opening hours: 6:00 AM - 10:00 PM.",
-  "what events are happening this week?": "1. **Fintech Hackathon** starting next Friday (Sept 5) at the Plaza.\n2. **Intro to Arduino** by Robotics Club on Tuesday at 6:30 PM (Block C Lounge).\n3. **Open Mic Night** on Friday at 7:00 PM at the Campus Amphitheater."
+  "where is the ai lab?": "The Robotics & AI Lab is located in Engineering Block C, 3rd Floor (Room C-302). It features GPU clusters and robot arms.",
+  "who teaches database management?": "Database Management (CS302) is taught by Dr. Evelyn Ross in IT Hall, Room 102.",
+  "what is the gym hours?": "Recreation Center Gym is open from 6:00 AM - 10:00 PM at the Student Hub.",
+  "where can i print documents on campus?": "Printing is available at the Central Library (1st Floor) and the Student Union Lounge."
 };
-export const DEFAULT_GENIE_RESPONSE = "I'm not sure about that specific detail, but I can tell you about: buildings, classrooms, teacher office hours, clubs, printing facilities, or events! Try picking one of the quick questions below.";
+
+export const DEFAULT_GENIE_RESPONSE = "I'm not sure about that, but I can tell you about: buildings, classrooms, teacher hours, printing, or gym! Try asking one of the suggested questions below.";
 export const GENIE_QUESTIONS = [
   "Where is the AI lab?",
   "Who teaches Database Management?",
-  "What clubs can I join if I'm interested in robotics?",
-  "Where can I print documents on campus?",
-  "How do I book a study room?",
-  "What is the Wi-Fi password?"
+  "What is the gym hours?",
+  "Where can I print documents on campus?"
 ];
