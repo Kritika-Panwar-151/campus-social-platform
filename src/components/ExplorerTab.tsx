@@ -198,7 +198,7 @@ export default function ExplorerTab() {
           {explorerViewMode === "scanner" && (
             <>
               {/* Header */}
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between shrink-0">
                 <div>
                   <h1 className="text-lg font-black text-[#333136] tracking-wide flex items-center gap-1.5">
                     📸 Campus Scanner
@@ -214,7 +214,7 @@ export default function ExplorerTab() {
 
               {/* Scavenger Hunt Event Banner */}
               {activeQuest && (
-                <div className="bg-gradient-to-r from-[#a27cf8] to-[#c5bae8] rounded-[24px] p-4 text-white shadow-xs relative overflow-hidden">
+                <div className="bg-gradient-to-r from-[#a27cf8] to-[#c5bae8] rounded-[24px] p-4 text-white shadow-xs relative overflow-hidden shrink-0">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
                   <div className="relative flex items-start justify-between gap-3">
                     <div className="flex-1">
@@ -242,7 +242,7 @@ export default function ExplorerTab() {
               )}
 
               {/* Camera Viewport Mockup */}
-              <div className="relative bg-white aspect-[4/3] rounded-[32px] overflow-hidden border border-[#c5bae8]/20 flex flex-col items-center justify-center p-6 select-none shadow-sm">
+              <div className="relative bg-white aspect-[4/3] rounded-[32px] overflow-hidden border border-[#c5bae8]/20 flex flex-col items-center justify-center p-6 select-none shadow-sm shrink-0">
                 <div className="absolute top-3 right-3 flex items-center gap-1 bg-[#f2efff] px-2.5 py-1 rounded-full text-[8px] font-black text-[#a27cf8] tracking-wider uppercase">
                   <span className="w-1 h-1 rounded-full bg-[#a27cf8]"></span>
                   Ready to scan
@@ -390,7 +390,7 @@ export default function ExplorerTab() {
               <div className="bg-white p-4.5 rounded-[32px] border border-[#c5bae8]/20 shadow-xs space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   {locations.map(loc => {
-                    const stamped = currentUser.passportStamps.includes(loc.id);
+                    const stamped = (currentUser.passportStamps || []).includes(loc.id);
                     return (
                       <div
                         key={loc.id}

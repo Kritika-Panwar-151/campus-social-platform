@@ -133,7 +133,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const storedQuests = localStorage.getItem("campus_quests");
       const storedMapTiles = localStorage.getItem("campus_map_tiles");
 
-      if (storedUser) setCurrentUser(JSON.parse(storedUser));
+      if (storedUser) {
+        const parsed = JSON.parse(storedUser);
+        setCurrentUser({
+          ...parsed,
+          exploreStreak: parsed.exploreStreak || 0,
+          passportStamps: parsed.passportStamps || [],
+          unlockedMapTiles: parsed.unlockedMapTiles || []
+        });
+      }
       if (storedUsers) setUsers(JSON.parse(storedUsers));
       if (storedLocations) setLocations(JSON.parse(storedLocations));
       if (storedDiscussions) setDiscussions(JSON.parse(storedDiscussions));
