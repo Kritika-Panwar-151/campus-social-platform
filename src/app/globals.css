@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-rgb: 10, 10, 12;
+  --foreground-rgb: 30, 41, 59;
+  --background-rgb: 248, 250, 252;
 }
 
 body {
@@ -47,13 +47,13 @@ body {
   scrollbar-width: none;
 }
 
-/* Custom background presets for cards */
+/* Custom background presets for cards (Brighter theme!) */
 .bg-slate-850 {
-  background-color: #1e293b90;
+  background-color: #ffffff;
 }
 
 .bg-slate-805 {
-  background-color: #33415550;
+  background-color: #f1f5f9;
 }
 
 .bg-indigo-650 {
@@ -61,5 +61,5 @@ body {
 }
 
 .bg-indigo-750 {
-  background-color: #3730a3;
+  background-color: #4338ca;
 }

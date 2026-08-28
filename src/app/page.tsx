@@ -48,13 +48,13 @@ function CampusAppContent() {
   });
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden bg-slate-900 relative">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-slate-50 relative">
       
-      {/* Toast Notification Container (Bound to phone screen coordinates) */}
+      {/* Toast Notification Container (Bound to phone screen coordinates, bright style) */}
       {toastNotification && (
         <div className="absolute top-4 left-4 right-4 z-50 animate-[slideDown_0.3s_ease-out]">
-          <div className="bg-slate-950/95 border border-indigo-500/35 text-slate-100 px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-2xl backdrop-blur-md">
-            <div className="w-2.5 h-2.5 rounded-full bg-indigo-400 animate-ping"></div>
+          <div className="bg-white border border-indigo-100 text-slate-800 px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-xl backdrop-blur-md">
+            <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-ping"></div>
             <p className="text-xs font-bold leading-normal">{toastNotification}</p>
           </div>
         </div>
@@ -65,73 +65,73 @@ function CampusAppContent() {
         {renderTabContent()}
       </div>
 
-      {/* BOTTOM TAB NAVIGATION BAR */}
-      <div className="h-16 bg-slate-950/95 backdrop-blur-md border-t border-slate-850 flex items-center justify-around shrink-0 px-2 select-none z-10">
+      {/* BOTTOM TAB NAVIGATION BAR (Bright style) */}
+      <div className="h-16 bg-white/95 backdrop-blur-md border-t border-slate-100 flex items-center justify-around shrink-0 px-2 select-none z-10">
         
         {/* TAB 1: EXPLORER */}
         <button
           onClick={() => setActiveTab("explorer")}
           className={`flex flex-col items-center justify-center flex-1 py-1 transition-all ${
-            activeTab === "explorer" ? "text-indigo-400 scale-105" : "text-slate-500 hover:text-slate-400"
+            activeTab === "explorer" ? "text-indigo-650 scale-105 font-bold" : "text-slate-400 hover:text-slate-500"
           }`}
         >
           <Compass className="w-5 h-5 mb-0.5" />
-          <span className="text-[9px] font-bold">Explorer</span>
+          <span className="text-[9px]">Explorer</span>
         </button>
 
         {/* TAB 2: COMMUNITY */}
         <button
           onClick={() => setActiveTab("social")}
           className={`flex flex-col items-center justify-center flex-1 py-1 transition-all ${
-            activeTab === "social" ? "text-indigo-400 scale-105" : "text-slate-500 hover:text-slate-400"
+            activeTab === "social" ? "text-indigo-650 scale-105 font-bold" : "text-slate-400 hover:text-slate-500"
           }`}
         >
           <Users className="w-5 h-5 mb-0.5" />
-          <span className="text-[9px] font-bold">Campus</span>
+          <span className="text-[9px]">Campus</span>
         </button>
 
         {/* TAB 3: GENIE CHATBOT */}
         <button
           onClick={() => setActiveTab("genie")}
           className={`flex flex-col items-center justify-center flex-1 py-1 transition-all relative ${
-            activeTab === "genie" ? "text-indigo-400 scale-105" : "text-slate-500 hover:text-slate-400"
+            activeTab === "genie" ? "text-indigo-650 scale-105 font-bold" : "text-slate-400 hover:text-slate-500"
           }`}
         >
-          <div className="absolute -top-3 p-2 bg-gradient-to-r from-indigo-650 to-violet-650 border border-indigo-500/25 rounded-full shadow-lg">
+          <div className="absolute -top-3 p-2 bg-gradient-to-r from-indigo-600 to-indigo-700 border border-indigo-500/20 rounded-full shadow-lg">
             <Sparkles className="w-4.5 h-4.5 text-white" />
           </div>
-          <span className="text-[9px] font-bold mt-5">Genie</span>
+          <span className="text-[9px] mt-5">Genie</span>
         </button>
 
         {/* TAB 4: INBOX */}
         <button
           onClick={() => setActiveTab("inbox")}
           className={`flex flex-col items-center justify-center flex-1 py-1 transition-all relative ${
-            activeTab === "inbox" ? "text-indigo-400 scale-105" : "text-slate-500 hover:text-slate-400"
+            activeTab === "inbox" ? "text-indigo-650 scale-105 font-bold" : "text-slate-400 hover:text-slate-500"
           }`}
         >
           <MessageSquare className="w-5 h-5 mb-0.5" />
           {hasUnreadMessages && (
-            <span className="absolute top-1 right-5 w-2 h-2 rounded-full bg-indigo-500 border border-slate-950 animate-pulse"></span>
+            <span className="absolute top-1 right-5 w-2 h-2 rounded-full bg-indigo-500 border border-white animate-pulse"></span>
           )}
-          <span className="text-[9px] font-bold">Inbox</span>
+          <span className="text-[9px]">Inbox</span>
         </button>
 
         {/* TAB 5: PROFILE */}
         <button
           onClick={() => setActiveTab("profile")}
           className={`flex flex-col items-center justify-center flex-1 py-1 transition-all ${
-            activeTab === "profile" ? "text-indigo-400 scale-105" : "text-slate-500 hover:text-slate-400"
+            activeTab === "profile" ? "text-indigo-650 scale-105 font-bold" : "text-slate-400 hover:text-slate-500"
           }`}
         >
           <img
             src={currentUser.avatar}
             alt="My Avatar"
             className={`w-5.5 h-5.5 rounded-full object-cover mb-0.5 border ${
-              activeTab === "profile" ? "border-indigo-400" : "border-slate-700"
+              activeTab === "profile" ? "border-indigo-500" : "border-slate-200"
             }`}
           />
-          <span className="text-[9px] font-bold">Profile</span>
+          <span className="text-[9px]">Profile</span>
         </button>
 
       </div>
