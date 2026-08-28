@@ -147,7 +147,9 @@ function CampusAppContent() {
 export default function Home() {
   return (
     <AppProvider>
-      <CampusAppContent />
+      <PhoneWrapper>
+        <CampusAppContent />
+      </PhoneWrapper>
     </AppProvider>
   );
 }
