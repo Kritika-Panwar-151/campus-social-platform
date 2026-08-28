@@ -66,7 +66,7 @@ function CampusAppContent() {
       </div>
 
       {/* BOTTOM TAB NAVIGATION BAR (Gamified dark purple with hot pink/magenta active state) */}
-      <div className="h-16 bg-[#070417]/95 backdrop-blur-md border-t border-[#20184c]/60 flex items-center justify-around shrink-0 px-2 select-none z-10">
+      <div className="min-h-[64px] bg-[#070417]/95 backdrop-blur-md border-t border-[#20184c]/60 flex items-center justify-around shrink-0 px-2 select-none z-10 pt-2.5 pb-6 md:pb-3 h-auto">
         
         {/* TAB 1: EXPLORER */}
         <button
