@@ -2,7 +2,7 @@
 
 This document outlines the complete architectural design, end-to-end tech stack, data flows, user journeys, and database schemas for the **Campus Social & Intelligence Platform**. 
 
-This revised version incorporates **Google Cloud Firestore** (NoSQL Database), **Databricks AI/BI Genie Agent** (Data Analytics chatbot), and details **free-tier production hosts** for each component of the system.
+This comprehensive guide serves as both the system design blueprint and user feature manual.
 
 ---
 
@@ -71,62 +71,114 @@ Every choice in this stack is selected to provide a **100% free-to-start develop
 
 ---
 
-## 3. Data Flow Diagram
+## 3. Comprehensive User Features Explanation
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Student as 📱 Mobile App (Vercel)
-    participant API as ⚙️ API Server (Render)
-    participant Auth as 🔑 Firebase Auth
-    participant DB as 🔥 Google Firestore
-    participant S3 as 📦 Cloudinary
-    participant Genie as 🧠 Databricks Genie
+### 📸 A. Campus Scanner
+*   **Purpose**: The primary exploratory mechanic of the application. Allows students to physically interact with their environment and "capture" spots on campus to log achievements.
+*   **User Action**: The student visits a location, opens the Scanner, and uploads a photograph. 
+*   **Behind the Scenes**: 
+    1. The client captures the photo and sends the data (with GPS coordinates metadata) to the API.
+    2. The API saves the photo to **Cloudinary** and maps the geolocation to a campus spot database.
+    3. Points are awarded based on **Rarity Tiers**:
+        *   *First to Document*: Scanned for the very first time on campus (+120 XP & "Pioneer Documenter" Badge).
+        *   *Hidden Gem*: Scanned by fewer than 5% of users (+80 XP).
+        *   *Secret Sanctuary*: Scanned by fewer than 15% of users (+60 XP).
+        *   *Common Hotspot*: Publicly popular spaces (+30 XP).
+    4. Reacting to the API success, the UI triggers a dynamic Toast alert, updates the user's level bar, and reveals coordinates.
 
-    Student->>Auth: Signup/Login Auth request
-    Auth-->>Student: Auth Token (Token valid)
-    
-    Student->>API: Scan Location (LocID + Photo Base64)
-    API->>S3: Upload Photo file
-    S3-->>API: Return Image URL
-    
-    API->>DB: Read user document & verify streak
-    DB-->>API: User Data (streak: 2 days)
-    
-    API->>DB: Add scanned stamp to user document & update XP
-    DB-->>API: Update success (XP Level Up!)
-    API-->>Student: Return Success Toast & Clear Fog-Map
-    
-    Note over DB, Genie: Periodic sync maps Firestore logs to Delta Lake
-    Genie->>DB: Admin asks: "Which location is a Hidden Gem?"
-    DB-->>Genie: Matches loc metadata
-    Genie-->>Student: Returns AI summary of Hotspots
-```
+### 🗺️ B. Fog-of-War Map
+*   **Purpose**: Gamifies navigation by turning the physical campus into a map template that students must unlock tile-by-tile.
+*   **User Action**: The student taps the **Fog Map** tab to view a 2x2 grid representing sectors (Engineering, Library, Canteen, Amphitheater).
+*   **Behind the Scenes**: 
+    1. Initially, tiles have `isRevealed: false` and are greyed out, hiding details.
+    2. Once the student scans a location associated with a sector (e.g. "Robotics Lab" -> Engineering sector), Firestore updates the sector to `isRevealed: true`.
+    3. The gray overlay dissolves, exposing coordinate lines and a color-coded icon representing the building type (`Cpu`, `BookOpen`, `Coffee`, `Music`). Clicking the revealed tile allows the user to view student tips and facility logs.
+
+### ✈️ C. Campus Passport & Stamp Collection
+*   **Purpose**: Creates a physical-feeling collection notebook showing the history of student exploration.
+*   **User Action**: Tapping the **Passport** subtab shows a grid of locked/unlocked stamp slots.
+*   **Behind the Scenes**: 
+    1. For each newly unlocked location, a virtual circular ink seal is stamped onto the page showing the location's initials and rarity.
+    2. Completed building sets (e.g., scanning all rooms inside Engineering Block C) automatically unlock custom badges (e.g., "Engineering Scholar") and award profile background frames.
+
+### 🔥 D. Explore Streaks
+*   **Purpose**: Encourages daily engagement and keeps the community active.
+*   **User Action**: A streak flame counter widget appears in the Scanner tab (e.g. `🔥 3 Day Streak`).
+*   **Behind the Scenes**: 
+    1. Daily streak rules compare the current scan date against the user's `lastScanDate` using timezone-safe UTC `.toDateString()` checks.
+    2. If the difference is exactly 1 day, the streak increments. A successful consecutive scan triggers a `+25 XP Streak Bonus`.
+    3. If the difference is greater than 1 day, the streak resets to 1. If scanned on the same day, the streak remains intact without awarding duplicate points.
+
+### ⚡ E. Seasonal Event Quests (Scavenger Hunts)
+*   **Purpose**: Boosts student interaction during special events (like Freshers' Week or college festivals).
+*   **User Action**: A purple "Live Event" quest card displays a checklist of spots to find (e.g., "Find and photograph 3 specific spots").
+*   **Behind the Scenes**: 
+    1. In the database, the active quest tracks target location IDs.
+    2. As the user scans campus spots, the system cross-references them.
+    3. Completing all checkpoints triggers a celebratory overlay, unlocks the "Scavenger Master" badge, and yields +100 XP.
+
+### 🗣️ F. Hub Matches & Discussions
+*   **Purpose**: Helps freshman find project partners, study groups, or peer circles.
+*   **User Action**: User browses the **Hub** tab to view matching profiles or write forum posts.
+*   **Behind the Scenes**:
+    1. **Matching Heuristics**: The app automatically computes overlap percentages between the user's skills/hobbies and peers:
+        $$\text{Match Score} = 30\% + \left( \frac{\text{Shared Interests} \cap \text{Shared Hobbies}}{\text{Total Interests}} \times 70\% \right)$$
+    2. Connecting with a student initiates a direct messaging connection.
+    3. **Forum Board**: Organized by category filters (#Hackathons, #Workshops, #Q&A). Tapping posts opens discussion threads where students can reply in real-time.
+
+### 💬 G. Direct Messaging & Coordinates Sharing
+*   **Purpose**: Seamless private communication between study buddies and teams.
+*   **User Action**: Tapping **Message** on a student's card opens the Inbox.
+*   **Behind the Scenes**:
+    1. Supports instant texts and photos.
+    2. **Campus Pin Sharing**: Users can click the map pin icon to share a verified campus spot directly into the chat. The receiver can click the shared card to instantly open its coordinates and details on the Explorer map.
+
+### 🧠 H. Databricks Genie Agent (Analytics Dashboard)
+*   **Purpose**: Enables campus administrators or event managers to ask query-less questions to understand campus flow.
+*   **User Action**: Admins log into the Databricks Genie dashboard.
+*   **Behind the Scenes**:
+    1. Genie reads GCS tables synced from Firestore.
+    2. The admin writes: *"Which block has the highest student traffic this week?"* or *"What is the distribution of unlocked badges?"*
+    3. Genie automatically maps the words to database attributes, runs SQL, and outputs formatted charts.
 
 ---
 
-## 4. User Journey Map
+## 4. End-to-End User Journey
 
 ```mermaid
 journey
     title Student User Journey Lifecycle
-    section Onboarding
-      Setup Profile: 5: Student logs in via Firebase Auth, choosing avatar and interests (AI, Chess).
-      Save User Document: 5: Firestore initializes user document with `passportStamps = []`.
-    section Exploration
-      Scan Landmark: 5: Snaps a photo at the AI Lab. Cloudinary stores the file.
-      Unlock Stamp: 5: Firestore adds "loc_ai_lab" to user's stamps. Client displays ink passport seal.
-      Clear Fog: 4: Map grid updates sector to active, showing colorful icon.
-    section Analytics & Genie
-      Ask Genie: 5: Admin asks Databricks Genie: "What is the daily scan frequency?".
-      Answer Rendered: 5: Genie parses Firestore analytics data and prints a bar chart.
+    section 1. Onboarding & Registration
+      Join Platform: 5: Student signs up using Firebase Auth, selects a profile avatar, and inputs study interests.
+      Init Profile: 5: Firestore creates user document with exploreStreak=0 and empty stamps array.
+    section 2. Gamified Exploration
+      Review Fog Map: 4: Taps the Fog Map to inspect coordinates of greyed-out campus sectors.
+      Identify & Scan Location: 5: Student snaps a photo of the Robotics Lab. Image stores in Cloudinary.
+      Award XP & Badge: 5: System grants +120 XP for First-ever photo and stamps the virtual Passport with an ink seal.
+      Verify Streak: 5: System increments exploreStreak to 1 Day.
+    section 3. Connecting & Social
+      Browse Matches: 5: Opens Matches tab, views peer cards sorted by Match Score % (e.g. 85% match).
+      Send Message & Coordinates: 4: Connects with a peer and shares the coordinate pin of a secret study spot.
+    section 4. Event Engagement
+      Join Scavenger Quest: 5: Views active event "Freshers' Week Hunt" checklist.
+      Complete Checklist: 5: Scans all 3 event targets, triggers Level Up modal (+100 XP), and unlocks the Master badge.
+    section 5. Administration Analytics
+      Query Engagement: 5: Administrator queries Databricks Genie to see heatmaps of unlocked spots.
 ```
+
+### Detailed Journey Narrative:
+1.  **Phase 1: Setup & Profile Personalization**: The student opens the application. They authenticate securely using **Firebase Authentication**. Upon entry, they are prompted to set up their student profile, selecting interests (e.g. *AI*, *Web Dev*), skills (e.g. *React*), and hobbies (e.g. *Chess*). This information is saved as a new document in the Firestore `/users` collection.
+2.  **Phase 2: Fog Map Exploration**: Tapping the Explorer tab, the student views the grayed-out **Fog Map**. They see that the *Engineering Sector* is locked. They visit the Robotics Lab in person, open the **Scanner**, and take a photo. 
+3.  **Phase 3: The Stamp Seal & XP Accumulation**: The server uploads the photo to **Cloudinary**, saves the scan to `/locations` and `/passport_stamps` in Firestore, and verifies it is the first time this spot has been photographed. The system rewards them with the **Pioneer Documenter** badge (+120 XP). The Engineering sector tile is revealed, turning bright purple, and an ink-seal stamp is stamped in their Passport.
+4.  **Phase 4: Matchmaking & Shared Pins**: Having earned XP, the student is promoted to Level 2. The celebration overlay pops up. They visit the **Campus Matches** hub. The algorithm highlights another Level 2 student, *Alice*, who shares an interest in *AI* (yielding an "85% Match"). The user connects with Alice and opens a DM thread in the **Inbox**. They click the **Pin** icon and attach the verified Robotics Lab coordinates to the chat so Alice can find it.
+5.  **Phase 5: Event Quests**: The user views the Live Event card on their dashboard. It lists a "Freshers' Week Hunt" to scan the *AI Lab*, the *Quiet Library*, and the *Canteen*. Since they have already scanned the AI Lab, it shows 1/3 progress. They visit the remaining locations to complete the quest, triggering a Level 3 promotion and the **Scavenger Master** badge.
+6.  **Phase 6: Admin Dashboard Analysis**: Behind the scenes, Firestore data is synced to GCS. The campus coordinator accesses the **Databricks Genie Agent** and asks: *"Which building was scanned the most during Freshers' Week?"*. The Genie translates this into an analytical query and produces a clean bar chart showing that the Canteen had the most scans.
 
 ---
 
 ## 5. Google Firestore Document Schema (NoSQL Collections)
 
-NoSQL Firestore databases organize data in hierarchical **Collections** and **Documents** instead of relational rows and tables. Here is our production database layout:
+Firestore document structures that power the platform:
 
 ### 1. `users` Collection
 *   **Path**: `/users/{userId}`
