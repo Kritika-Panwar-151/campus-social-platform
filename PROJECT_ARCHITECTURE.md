@@ -12,22 +12,22 @@ This comprehensive guide serves as both the system design blueprint and user fea
 graph TD
     User([📱 Mobile Client]) -->|HTTPS / WSS| Server[⚙️ Node.js API Server on Render]
     
-    subgraph Frontend Client (Vercel Free Tier)
+    subgraph "Frontend Client (Vercel Free Tier)"
         User
     end
 
-    subgraph Serverless Backend & Database (Firebase Free Tier)
+    subgraph "Serverless Backend & Database (Firebase Free Tier)"
         Server -->|Sync Data| DB[(🔥 Google Firestore NoSQL DB)]
         Auth[🔑 Firebase Auth]
         S3[📦 Cloudinary Object Storage]
     end
 
-    subgraph Enterprise Analytics & AI Genie Agent (Databricks)
+    subgraph "Enterprise Analytics & AI Genie Agent (Databricks)"
         DB -->|Sync Connector / GCS| Lake[🌊 Delta Lakehouse]
         Lake -->|Query Engine| Genie[🧠 Databricks Genie Agent]
     end
 
-    subgraph Third-Party integrations (Free Tiers)
+    subgraph "Third-Party integrations (Free Tiers)"
         Server -->|Image Uploads| S3
         User -->|Login authentication| Auth
     end
