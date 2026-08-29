@@ -2,90 +2,72 @@
 
 This document outlines the complete architectural design, end-to-end tech stack, data flows, user journeys, and database schemas for the **Campus Social & Intelligence Platform**. 
 
-While the current codebase serves as a high-fidelity frontend prototype, this blueprint details the full production-ready implementation.
+This revised version incorporates **Google Cloud Firestore** (NoSQL Database), **Databricks AI/BI Genie Agent** (Data Analytics chatbot), and details **free-tier production hosts** for each component of the system.
 
 ---
 
-## 1. End-to-End Tech Stack
+## 1. End-to-End System Architecture
 
 ```mermaid
 graph TD
-    User([📱 Mobile Client]) -->|HTTPS / WSS| GW[🛡️ Nginx / API Gateway]
+    User([📱 Mobile Client]) -->|HTTPS / WSS| Server[⚙️ Node.js API Server on Render]
     
-    subgraph Frontend Client
+    subgraph Frontend Client (Vercel Free Tier)
         User
     end
 
-    subgraph Backend Microservices
-        GW -->|Route APIs| API[⚙️ Express / NestJS API Server]
-        GW -->|WebSockets| WS[💬 Live Messaging Server]
-        API -->|Task Queue| Worker[🔄 Celery / BullMQ Background Worker]
+    subgraph Serverless Backend & Database (Firebase Free Tier)
+        Server -->|Sync Data| DB[(🔥 Google Firestore NoSQL DB)]
+        Auth[🔑 Firebase Auth]
+        S3[📦 Cloudinary Object Storage]
     end
 
-    subgraph Storage & Caching
-        API -->|SQL Queries| DB[(🐘 PostgreSQL Relational DB)]
-        WS -->|PubSub / Session Cache| Cache[(🔴 Redis In-Memory Cache)]
-        API -->|Cache Checkins / Streaks| Cache
-        API -->|Upload Assets| S3[📦 Cloudinary / AWS S3 Object Storage]
-        Worker -->|Batch Compute Match Scores| DB
+    subgraph Enterprise Analytics & AI Genie Agent (Databricks)
+        DB -->|Sync Connector / GCS| Lake[🌊 Delta Lakehouse]
+        Lake -->|Query Engine| Genie[🧠 Databricks Genie Agent]
     end
 
-    subgraph Third-Party integrations
-        API -->|LLM Genie Queries| Gemini[🧠 Google Gemini API]
+    subgraph Third-Party integrations (Free Tiers)
+        Server -->|Image Uploads| S3
+        User -->|Login authentication| Auth
     end
 ```
 
-### 💻 Frontend (Client Tier)
-*   **Framework**: Next.js 14 (App Router) & React 18.
-*   **Styling**: Tailwind CSS (light-purple gaming palette: Ermine White, Candied Yam, Purple Illusionist).
-*   **Icons**: Lucide React.
-*   **State Management**: React Context API (with localStorage caching for offline capability).
-
-### ⚙️ Backend (Application Tier)
-*   **API Framework**: Node.js with **NestJS** or **Express** (written in TypeScript).
-*   **WebSocket Gateway**: **Socket.io** for real-time messaging, instant matchmaking alerts, and typing indicators.
-*   **Background Workers**: **BullMQ** (powered by Redis) for scheduling reset tasks, evaluating scavenger hunt completions, and daily explore streak expiration checks at midnight.
-*   **AI Integration**: Node SDK for **Google Gemini API** to power the Genie Chatbot, utilizing system instructions seeded with campus guides, building directories, and classroom schedules.
-
-### 🐘 Database & Cache (Data Tier)
-*   **Primary Relational Database**: **PostgreSQL** (hosted via Supabase or AWS RDS) to store schemas for users, location logs, passport stamp sets, messages, and discussion threads.
-*   **In-Memory Database & Cache**: **Redis** for storing active user sessions, temporary match scores, real-time message delivery queues, and daily heartbeat streak check-ins.
-*   **Object Storage**: **AWS S3** or **Cloudinary** for uploading and hosting photos of campus locations taken by students.
-
 ---
 
-## 2. Feature Explanations & Execution Flows
+## 2. Tech Stack Breakdown (What Each Part is Used For & Free Tier Availability)
 
-### A. Fog-of-War Map Unlocking
-*   **Concept**: The campus is divided into geographic sector coordinates (e.g., Grid `[A1]`, `[B2]`). Initially, the map view is greyed out (in "fog").
-*   **Flow**:
-    1. Student visits a physical building, opens the scanner, and snaps a photo.
-    2. The photo is sent to the backend, which matches metadata coordinates or visual markers.
-    3. Once verified, the backend marks the associated `MapTile` as `isRevealed = true` in the DB.
-    4. The client receives a WebSocket trigger to clear the gray overlay for that sector, revealing the colorful icon (`Cpu`, `BookOpen`, `Coffee`, `Music`) and detailed facilities list.
+Every choice in this stack is selected to provide a **100% free-to-start development environment** with robust pricing tiers that scale up only when user traffic increases.
 
-### B. Campus Passport & Stamp Sets
-*   **Concept**: Every unique location scanned is logged in the user's permanent passport book as a virtual inked stamp.
-*   **Flow**:
-    1. On scanning a location, if `isFirstTimeScan = true`, a record is created in the `passport_stamps` table.
-    2. The client displays a custom stamp showing the building's initials (e.g., "RA" for Robotics Lab) and the rarity tier of the spot.
-    3. If the user completes a full building set (e.g., all 3 rooms in "Engineering Block C"), the system awards a rare building badge and +100 XP.
+### A. Frontend (Client Tier)
+*   **Next.js 14 & React 18**: A framework for building rapid, interactive mobile-responsive views.
+*   **Hosting Provider**: **Vercel (Hobby Free Tier)**. 
+    *   *What it is used for*: Deploys and serves the static assets, Next.js page routing, and animations.
+    *   *Free limits*: Unlimited deployments, free custom domain connection (SSL included), and 100 GB bandwidth per month.
 
-### C. Explore Streaks Engine
-*   **Concept**: Encourages daily engagement by rewarding consecutive scan updates.
-*   **Flow**:
-    1. When a user scans a spot, the system checks `lastScanDate`.
-    2. If `currentDate - lastScanDate == 1 day`, the streak counter increments by 1 and a `+25 XP Streak Bonus` is awarded.
-    3. If `currentDate - lastScanDate > 1 day`, the streak resets to 1.
-    4. If scanned on the same calendar day, the streak is maintained but no duplicate bonus is awarded.
+### B. Backend API & Real-time (Application Tier)
+*   **Node.js & Express**: Simple, lightweight JavaScript server for managing scans, connections, and forum comments.
+*   **Hosting Provider**: **Render (Free Web Services Tier)** or **Firebase Cloud Functions (Spark Free Tier)**.
+    *   *What it is used for*: Handles incoming scan photo uploads, runs streak algorithms, and broadcasts active messaging triggers.
+    *   *Free limits*: Firebase gives 2 million cloud execution invocations free per month. Render provides free web service hosting with automatic scaling.
 
-### D. Dynamic Matchmaker (Campus Tab)
-*   **Concept**: Connects students based on matching profile attributes (Interests, Skills, Hobbies).
-*   **Heuristics**:
-    $$\text{Match Score} = 30\% + \left( \frac{\text{Shared Interests} \cap \text{Shared Skills}}{\text{Total Interests}} \times 70\% \right)$$
-    *   A matching score (capped at 99%) is calculated when users browse profiles. 
-    *   Clicking **Connect** sends an invitation that triggers a real-time notification on the peer's screen.
-    *   Once connected, a new DM chat thread is initialized in their `inbox`.
+### C. Database (Storage Tier)
+*   **Google Cloud Firestore**: A serverless, NoSQL document-based database.
+*   **Hosting Provider**: **Firebase Console / Google Cloud Platform (GCP Free Tier)**.
+    *   *What it is used for*: Replaces traditional SQL databases to store unstructured JSON documents for users, DM chat threads, forum threads, map coordinates, and stamp items.
+    *   *Free limits*: Highly generous **No-Credit-Card Free Tier** providing **50,000 free reads, 20,000 free writes, 20,000 free deletes per day**, and 1 GiB of permanent data storage.
+
+### D. File Storage (Asset Tier)
+*   **Cloudinary**: Media management platform.
+*   **Hosting Provider**: **Cloudinary (Free Tier)**.
+    *   *What it is used for*: Hosts uploaded images of campus spots taken by users. Instantly resizes and compresses photos on-the-fly to load quickly on mobile devices.
+    *   *Free limits*: 25 free credits per month (equal to **25 GB of image storage or 25,000 image transformations**).
+
+### E. AI Analytics (Databricks Genie Agent Tier)
+*   **Databricks AI/BI Genie Agent**: A conversational data assistant that translates natural language queries into SQL to retrieve analytics from database storage.
+*   **Hosting Provider**: **Databricks Community Edition (Free Tier)** combined with Firestore-to-Lakehouse sync.
+    *   *What it is used for*: Allows administrators or students to ask conversational questions (e.g. *"Show me the most scanned building this week"* or *"How many students unlocked the Library stamp?"*) and displays automated charts and tables.
+    *   *How it works*: Firestore database changes are automatically synced to Google Cloud Storage (GCS free tier up to 5 GB) using a Firebase Extension. Databricks mounts this GCS bucket as an external Delta Lake table, which the Genie Agent queries.
 
 ---
 
@@ -94,23 +76,31 @@ graph TD
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Student as 📱 Mobile App
-    participant API as ⚙️ Express/NestJS API
-    participant S3 as 📦 AWS S3 / Cloudinary
-    participant DB as 🐘 PostgreSQL DB
-    participant Cache as 🔴 Redis Cache
+    actor Student as 📱 Mobile App (Vercel)
+    participant API as ⚙️ API Server (Render)
+    participant Auth as 🔑 Firebase Auth
+    participant DB as 🔥 Google Firestore
+    participant S3 as 📦 Cloudinary
+    participant Genie as 🧠 Databricks Genie
 
+    Student->>Auth: Signup/Login Auth request
+    Auth-->>Student: Auth Token (Token valid)
+    
     Student->>API: Scan Location (LocID + Photo Base64)
     API->>S3: Upload Photo file
     S3-->>API: Return Image URL
-    API->>DB: Check if first-ever scan of this spot
-    DB-->>API: Return Scan Count (e.g., count = 0 -> First Scan!)
-    API->>DB: Write to `passport_stamps` and unlock map tile
-    API->>Cache: Verify & Increment Daily Explore Streak
-    Cache-->>API: Return Streak Count (e.g., 3 Days)
-    API->>DB: Update user XP (+120 XP for First Photo, +25 XP Streak)
-    DB-->>API: Return updated XP & Level (Level Up triggered!)
-    API-->>Student: Push UI update (Unlock Stamp, Clear Fog, Level Up Overlay)
+    
+    API->>DB: Read user document & verify streak
+    DB-->>API: User Data (streak: 2 days)
+    
+    API->>DB: Add scanned stamp to user document & update XP
+    DB-->>API: Update success (XP Level Up!)
+    API-->>Student: Return Success Toast & Clear Fog-Map
+    
+    Note over DB, Genie: Periodic sync maps Firestore logs to Delta Lake
+    Genie->>DB: Admin asks: "Which location is a Hidden Gem?"
+    DB-->>Genie: Matches loc metadata
+    Genie-->>Student: Returns AI summary of Hotspots
 ```
 
 ---
@@ -121,103 +111,99 @@ sequenceDiagram
 journey
     title Student User Journey Lifecycle
     section Onboarding
-      Create Profile: 5: Student sets up profile, choosing interests (AI, Chess, Figma).
-      Interests saved to DB: 5: Context loads and maps tags to personalize social hub matches.
-    section Fog-of-War Exploration
-      Locate Locked spot: 4: Student views grayed-out Fog Map tiles to find a campus spot.
-      Scan Target: 5: Snaps a photo at the Canteen.
-      Fog Cleared: 5: Spot turns colorful on the map, and a passport stamp ink seal is stamped.
-    section Social & Community
-      View Matching Peers: 5: Social hub displays student matches with matching scores (e.g., "85% Match").
-      Send Connection & DM: 4: Connects with classmate, shares the coordinates of a "Hidden Gem" canteen.
-      Forum post participation: 4: Asks a question on the discussions board about an upcoming hackathon.
+      Setup Profile: 5: Student logs in via Firebase Auth, choosing avatar and interests (AI, Chess).
+      Save User Document: 5: Firestore initializes user document with `passportStamps = []`.
+    section Exploration
+      Scan Landmark: 5: Snaps a photo at the AI Lab. Cloudinary stores the file.
+      Unlock Stamp: 5: Firestore adds "loc_ai_lab" to user's stamps. Client displays ink passport seal.
+      Clear Fog: 4: Map grid updates sector to active, showing colorful icon.
+    section Analytics & Genie
+      Ask Genie: 5: Admin asks Databricks Genie: "What is the daily scan frequency?".
+      Answer Rendered: 5: Genie parses Firestore analytics data and prints a bar chart.
 ```
 
 ---
 
-## 5. Production Database Schema
+## 5. Google Firestore Document Schema (NoSQL Collections)
 
-The database relational schema required for a complete production deploy of the system:
+NoSQL Firestore databases organize data in hierarchical **Collections** and **Documents** instead of relational rows and tables. Here is our production database layout:
 
-### 👤 User Profiles Table (`users`)
-```sql
-CREATE TABLE users (
-    id VARCHAR(50) PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    avatar_url TEXT NOT NULL,
-    bio TEXT,
-    level INT DEFAULT 1,
-    xp INT DEFAULT 0,
-    interests TEXT[] DEFAULT '{}',
-    skills TEXT[] DEFAULT '{}',
-    hobbies TEXT[] DEFAULT '{}',
-    explore_streak INT DEFAULT 0,
-    last_scan_date DATE,
-    joined_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+### 1. `users` Collection
+*   **Path**: `/users/{userId}`
+```json
+{
+  "name": "New Explorer",
+  "username": "freshman_xyz",
+  "avatarUrl": "https://images.unsplash.com/.../avatar.jpg",
+  "bio": "CS freshman looking for hackathon teams.",
+  "level": 1,
+  "xp": 45,
+  "interests": ["AI", "Chess", "Gaming"],
+  "skills": ["React", "Python"],
+  "hobbies": ["Coffee"],
+  "exploreStreak": 1,
+  "lastScanDate": "2026-08-29",
+  "joinedDate": "2026-08-29T14:00:00Z"
+}
 ```
 
-### 📍 Campus Locations Table (`locations`)
-```sql
-CREATE TABLE locations (
-    id VARCHAR(50) PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    building VARCHAR(100) NOT NULL,
-    floor VARCHAR(50) NOT NULL,
-    coordinates VARCHAR(50) NOT NULL,
-    rarity VARCHAR(50) CHECK (rarity IN ('Common Hotspot', 'Hidden Gem', 'Secret Sanctuary', 'First to Document')),
-    description TEXT,
-    facilities TEXT[] DEFAULT '{}',
-    tips TEXT[] DEFAULT '{}'
-);
+### 2. `locations` Collection
+*   **Path**: `/locations/{locationId}`
+```json
+{
+  "name": "Robotics & AI Research Lab",
+  "building": "Engineering Block C",
+  "floor": "3rd Floor",
+  "coordinates": "C3",
+  "rarity": "First to Document",
+  "description": "State-of-the-art facility featuring robotic arms, edge computing systems, and project workspace panels.",
+  "facilities": [
+    "High-speed Wi-Fi network",
+    "Hardware workstation bays",
+    "GPU compute clusters"
+  ],
+  "tips": [
+    "Scan the QR code on the main doors to register temporary lab cards.",
+    "Quiet environment—perfect for working on team coding sprints."
+  ]
+}
 ```
 
-### ✈️ Passport Stamps Table (`passport_stamps`)
-```sql
-CREATE TABLE passport_stamps (
-    id SERIAL PRIMARY KEY,
-    user_id VARCHAR(50) REFERENCES users(id) ON DELETE CASCADE,
-    location_id VARCHAR(50) REFERENCES locations(id) ON DELETE CASCADE,
-    unlocked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_first_documenter BOOLEAN DEFAULT FALSE,
-    UNIQUE(user_id, location_id)
-);
+### 3. `passport_stamps` Collection
+*   **Path**: `/users/{userId}/stamps/{stampId}`
+```json
+{
+  "locationId": "loc_ai_lab",
+  "unlockedAt": "2026-08-29T14:05:00Z",
+  "isFirstDocumenter": true,
+  "locationName": "Robotics & AI Research Lab"
+}
 ```
 
-### 🗺️ Map Tiles Table (`map_tiles`)
-```sql
-CREATE TABLE map_tiles (
-    id VARCHAR(50) PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    coordinates VARCHAR(50) NOT NULL,
-    icon_type VARCHAR(50) NOT NULL, -- 'Cpu', 'BookOpen', 'Coffee', 'Music'
-    associated_location_id VARCHAR(50) REFERENCES locations(id)
-);
+### 4. `messages` Collection
+*   **Path**: `/chats/{chatId}/messages/{messageId}`
+```json
+{
+  "senderId": "me",
+  "receiverId": "user_alice",
+  "text": "Check out this spot!",
+  "imageUrl": "https://res.cloudinary.com/.../lab.jpg",
+  "sharedLocationId": "loc_ai_lab",
+  "timestamp": "2026-08-29T14:10:00Z"
+}
 ```
 
-### 💬 Messages Table (`messages`)
-```sql
-CREATE TABLE messages (
-    id SERIAL PRIMARY KEY,
-    sender_id VARCHAR(50) NOT NULL,
-    receiver_id VARCHAR(50) NOT NULL,
-    text TEXT,
-    image_url TEXT,
-    shared_location_id VARCHAR(50) REFERENCES locations(id),
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-### 🗣️ Discussion Posts Table (`discussion_posts`)
-```sql
-CREATE TABLE discussion_posts (
-    id VARCHAR(50) PRIMARY KEY,
-    author_id VARCHAR(50) REFERENCES users(id) ON DELETE CASCADE,
-    title VARCHAR(200) NOT NULL,
-    content TEXT NOT NULL,
-    tag VARCHAR(50) CHECK (tag IN ('Hackathons', 'Workshops', 'Q&A')),
-    likes INT DEFAULT 0,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+### 5. `discussion_posts` Collection
+*   **Path**: `/posts/{postId}`
+```json
+{
+  "authorId": "me",
+  "authorName": "New Explorer",
+  "authorAvatar": "https://images.unsplash.com/.../avatar.jpg",
+  "title": "Anyone attending the Robotics Hackathon next Tuesday?",
+  "content": "Looking to form a team of 3. I have React experience, looking for Python backend devs!",
+  "tag": "Hackathons",
+  "likes": 5,
+  "timestamp": "2026-08-29T14:15:00Z"
+}
 ```
