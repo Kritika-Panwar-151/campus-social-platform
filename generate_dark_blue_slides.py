@@ -60,7 +60,6 @@ def add_header(slide, title_text, category_text="BMSCE CAMPUS SOCIAL PLATFORM"):
     p2.font.color.rgb = COLOR_TEXT_MAIN
 
 def create_card(slide, x, y, width, height, title_text, body_text, border_color=COLOR_BORDER, title_color=COLOR_ACCENT_CYAN):
-    # Draw rounded rectangle represent a card
     shape = slide.shapes.add_shape(
         MSO_SHAPE.ROUNDED_RECTANGLE,
         Inches(x), Inches(y), Inches(width), Inches(height)
@@ -70,7 +69,6 @@ def create_card(slide, x, y, width, height, title_text, body_text, border_color=
     shape.line.color.rgb = border_color
     shape.line.width = Pt(1.5)
     
-    # Text inside card
     tf = shape.text_frame
     tf.word_wrap = True
     tf.margin_left = Inches(0.25)
@@ -78,22 +76,32 @@ def create_card(slide, x, y, width, height, title_text, body_text, border_color=
     tf.margin_top = Inches(0.2)
     tf.margin_bottom = Inches(0.2)
     
-    # Card Title
     p = tf.paragraphs[0]
     p.text = title_text
     p.font.name = "Arial"
-    p.font.size = Pt(14)
+    p.font.size = Pt(13)
     p.font.bold = True
     p.font.color.rgb = title_color
-    p.space_after = Pt(6)
+    p.space_after = Pt(5)
     
-    # Card Body
     p2 = tf.add_paragraph()
     p2.text = body_text
     p2.font.name = "Arial"
-    p2.font.size = Pt(11.5)
+    p2.font.size = Pt(10.5)
     p2.font.color.rgb = COLOR_TEXT_MAIN
     
+    return shape
+
+def add_arrow(slide, x, y, width, height):
+    # Renders a sleek neon cyan arrow to represent flow paths
+    shape = slide.shapes.add_shape(
+        MSO_SHAPE.RIGHT_ARROW,
+        Inches(x), Inches(y), Inches(width), Inches(height)
+    )
+    shape.fill.solid()
+    shape.fill.fore_color.rgb = COLOR_ACCENT_CYAN
+    shape.line.color.rgb = COLOR_ACCENT_CYAN
+    shape.line.width = Pt(1)
     return shape
 
 def add_placeholder_box(slide, x, y, width, height, label_text):
@@ -211,7 +219,6 @@ for idx, (title, text) in enumerate(bullets):
     
     # Body inline
     p.text += text
-    # Fix body part color inside paragraph to secondary gray
     p.space_after = Pt(16)
 
 # Right Column Side Cards
@@ -304,46 +311,94 @@ for idx, (title, desc) in enumerate(social_steps):
 
 add_placeholder_box(slide, 6.9, 1.8, 5.6, 4.9, "[ SCREENSHOT: PEER MATCHES / DIRECT MESSAGES / INBOX ]")
 
-# ----------------- SLIDE 7: ARCHITECTURE DIAGRAM -----------------
+# ----------------- SLIDE 7: ARCHITECTURE DIAGRAM (FULLY DRAWN FLOW) -----------------
 slide = prs.slides.add_slide(slide_layout)
 apply_background(slide)
 add_header(slide, "System Architecture Blueprint", "06. TECHNICAL TOPOLOGY")
 
-create_card(slide, 0.8, 1.8, 5.6, 1.15, 
-            "Frontend (Vercel Host)", "Next.js App Router loaded locally on client viewports. Caches assets for offline capability.")
+# Replaced text cards + placeholders with a full 5-stage horizontal flowchart mapping the entire stack
+box_y = 2.8
+box_height = 2.4
+box_width = 1.85
+arrow_y = 3.75
+arrow_width = 0.45
+arrow_height = 0.5
 
-create_card(slide, 0.8, 3.05, 5.6, 1.15, 
-            "REST API Server (Render Host)", "Node/Express endpoint handling geofence coordinates checks and messaging gateways.")
+# 1. Mobile Client
+create_card(slide, 0.8, box_y, box_width, box_height, 
+            "📱 Client Tier", 
+            "Next.js 14 / React\n• Responsive layouts\n• Caches views locally\n• Offline-first queueing\n• Hosted on Vercel")
 
-create_card(slide, 0.8, 4.3, 5.6, 1.15, 
-            "NoSQL Database (Google Firestore)", "Stores student profiles, chat logs, stamps, and coordinates as document schemas.")
+add_arrow(slide, 2.65, arrow_y, arrow_width, arrow_height)
 
-create_card(slide, 0.8, 5.55, 5.6, 1.15, 
-            "File Host (Cloudinary CDN)", "Compresses and stores student scan uploads globally for mobile load speeds.")
+# 2. Server API
+create_card(slide, 3.1, box_y, box_width, box_height, 
+            "⚙️ Express API", 
+            "Node.js Middleware\n• Validates coordinates\n• Checks checkin streaks\n• Routes direct messages\n• Hosted on Render")
 
-add_placeholder_box(slide, 6.9, 1.8, 5.6, 4.9, "[ ARCHITECTURE DIAGRAM: FRONTEND / API / STORAGE / CLOUD ]")
+add_arrow(slide, 4.95, arrow_y, arrow_width, arrow_height)
 
-# ----------------- SLIDE 8: DATA/USER FLOW DIAGRAM -----------------
+# 3. Firestore & Storage
+create_card(slide, 5.4, box_y, box_width, box_height, 
+            "🔥 Cloud Storage", 
+            "Google Firestore\n• JSON Document DBs\n• Firebase Auth checks\n• Cloudinary photo hosts\n• Serverless scaling")
+
+add_arrow(slide, 7.25, arrow_y, arrow_width, arrow_height)
+
+# 4. GCS Delta Data Lake
+create_card(slide, 7.7, box_y, box_width, box_height, 
+            "🌊 Data Lake", 
+            "GCS / Delta Lake\n• Sync extension exports\n• Stores daily updates\n• Mounted as Delta tables\n• Google Storage host")
+
+add_arrow(slide, 9.55, arrow_y, arrow_width, arrow_height)
+
+# 5. Databricks Genie
+create_card(slide, 10.0, box_y, 2.5, box_height, 
+            "🧠 Analytics", 
+            "Databricks Genie CE\n• Natural language inputs\n• Auto-SQL translation\n• Renders traffic maps\n• Real-time admin views")
+
+# ----------------- SLIDE 8: DATA/USER FLOW DIAGRAM (FULLY DRAWN FLOW) -----------------
 slide = prs.slides.add_slide(slide_layout)
 apply_background(slide)
 add_header(slide, "Data & User Flow Diagram", "07. PIPELINE FLOW")
 
-create_card(slide, 0.8, 1.8, 5.6, 1.5, 
-            "Location Scanning Pipeline", 
-            "Camera Upload -> API uploads to Cloudinary -> API checks location databases -> Firestore logs stamp -> Client unlocks Map Tile.",
+# Replaced placeholder with a full 4-stage horizontal flow diagram mapping the location upload pipeline
+flow_y = 2.8
+flow_height = 2.4
+flow_width = 2.2
+arrow_flow_y = 3.75
+arrow_flow_width = 0.55
+arrow_flow_height = 0.5
+
+# Step 1
+create_card(slide, 0.8, flow_y, flow_width, flow_height, 
+            "📸 1. Capture & Scan", 
+            "Student takes a campus landmark photo. The Next.js client attaches GPS metadata and dispatches it securely to the Node server.",
             title_color=COLOR_ACCENT_CYAN)
 
-create_card(slide, 0.8, 3.5, 5.6, 1.5, 
-            "Explore Streak Calculation", 
-            "Client logs scan -> Server checks lastScanDate -> if equal to 1 day, increments streak and awards +25 XP streak bonus.",
+add_arrow(slide, 3.0, arrow_flow_y, arrow_flow_width, arrow_flow_height)
+
+# Step 2
+create_card(slide, 3.55, flow_y, flow_width, flow_height, 
+            "📦 2. Host & Save", 
+            "Node server uploads the photo to Cloudinary. Once complete, it saves the optimized HTTPS image URL to Google Firestore.",
             title_color=COLOR_ACCENT_CYAN)
 
-create_card(slide, 0.8, 5.2, 5.6, 1.5, 
-            "Databricks Genie Ingestion", 
-            "Firestore records -> Syncs to GCS Bucket via Firebase Extension -> Delta Lake mount -> Databricks Genie query execution.",
+add_arrow(slide, 5.75, arrow_flow_y, arrow_flow_width, arrow_flow_height)
+
+# Step 3
+create_card(slide, 6.3, flow_y, flow_width, flow_height, 
+            "🔥 3. Verify Checkins", 
+            "Firestore checks location data, stamps the student's Passport document, increments streaks, and unlocks map tiles.",
             title_color=COLOR_ACCENT_CYAN)
 
-add_placeholder_box(slide, 6.9, 1.8, 5.6, 4.9, "[ DIAGRAM: DATA SEQUENCE TRANSACTION FLOW ]")
+add_arrow(slide, 8.5, arrow_flow_y, arrow_flow_width, arrow_flow_height)
+
+# Step 4
+create_card(slide, 9.05, 3.5, flow_y, flow_height, 
+            "🏆 4. Award XP", 
+            "API calculates points (+120 XP for First-ever scan) and unlocks achievements, showing a Level-Up overlay on the phone screen.",
+            title_color=COLOR_ACCENT_CYAN)
 
 # ----------------- SLIDE 9: DATA MODEL USAGE -----------------
 slide = prs.slides.add_slide(slide_layout)
@@ -470,4 +525,4 @@ create_card(slide, x_col3, 1.8, col_width, height_col,
 
 # Save presentation
 prs.save("BMSCE_Campus_Social_Platform_DarkBlue.pptx")
-print("Dark Blue Presentation generated successfully!")
+print("Fully drawn Presentation generated successfully!")
